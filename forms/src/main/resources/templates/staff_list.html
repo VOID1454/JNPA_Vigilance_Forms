@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Staff List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #333;
+            font-size: 2em;
+        }
+        
+        table {
+            width: 80%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            font-size: 1em;
+            border: 1px solid #ddd;  /* Added border for table cells */
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        td a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        td a:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f1f1;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+
+        h1 {
+            margin-top: 80px;
+        }
+
+        .filter-input {
+            margin: 5px;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <header th:insert="~{fragments/adminheader.html :: header}"></header>
+    <h1>List of Submitted Forms</h1>
+
+    <table id="list">
+        <thead>
+            <tr>
+                <th>Staff No</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <th><input type="text" class="filter-input" placeholder="Filter Staff No"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Name"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Department"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter role" value="User "></th>
+                <th></th> <!-- Empty header for Action column -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.staffno ?: 'N/A'}"></td>
+                <td th:text="${user.name}"></td>
+                
+                <td th:text="${user.department}"></td>
+                <td th:text="${user.Role}"></td>
+                <td><a th:href="@{/staff/{staffno}(staffno=${user.staffno})}">View all forms</a></td> 
+            </tr>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="3" class="no-data">No staff data available</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTables with retrieve option
+        var table = $('#list').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            retrieve: true, // Retrieve existing instance if already initialized
+            language: {
+                search: "Search: " // Customize search bar label
+            }
+        });
+
+        // Set default value for Role filter
+        var roleFilterInput = $('.filter-input').eq(3); // Assuming Role is the 4th column (index 3)
+        roleFilterInput.val('User  '); // Set default value
+        table.column(3).search('User  ').draw(); // Trigger search for Role column
+
+        // Custom filtering for each column
+        $('.filter-input').on('keyup change', function () {
+            var index = $(this).parent().index();
+            table.column(index).search(this.value).draw();
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables
+            var table = $('#list').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                language: {
+                    search: "Search: " // Customize search bar label
+                }
+            });
+
+            // Custom filtering for each column
+            $('.filter-input').on('keyup change', function () {
+                var index = $(this).parent().index();
+                table.column(index).search(this.value).draw();
+            });
+        });
+    </script>
+</body>
+</html>

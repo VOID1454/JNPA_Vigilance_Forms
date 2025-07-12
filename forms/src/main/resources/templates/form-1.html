@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable Expenditure Table</title>
+    <style>
+        table {
+            padding: auto;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;  
+        }
+        td[contenteditable="true"]:hover {
+            background-color: #f9f9f9;
+            cursor: text;
+        }
+        input[type="date"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            border:black;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 30px;
+            max-height: 150px;
+            border: 1px solid black;
+            overflow: hidden; /* Prevent scrollbar flicker */
+            resize: none;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .save-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #4CAF50;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .dropdown-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        h1 {
+            margin-top: 80px;
+        }
+        h1, h2 {
+            text-align: center;
+            padding: 2px;
+        }
+        th {
+    background-color: #6fa7eb;
+}
+    </style>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+<header th:insert="~{fragments/header.html :: header}"></header>
+<script src="/static/js/scripts.js"></script>
+<h1>Form- 1</h1>
+<h2>Expenditure on Gifts</h2>
+<h2>सरकारी कर्मचारियों द्वारा उपहार स्वीकार करने संबंध में</h2>
+<h2>Department : <span th:text="${session.department}"></span></h2>
+
+
+
+<form action="/user/save-table" method="POST" id="expenditureForm" th:object="${object}">
+    <input type="hidden" id="selectedYear" name="for-year">
+    
+    <table id="expenditureTable">
+        <thead>
+            <tr>
+                <th>Sr. No</th>
+                <th>Year</th>
+                <th>Name & Designation of the Government Official to whom gift has been given.</th>
+                <th>Date on which gift has been given</th>
+                <th>Expenditure incurred by JNPA (Rs.)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>
+                    
+                    <!-- <select name="forquarter[]" required>
+                        <option value="" disabled selected>Select Quarter</option>
+                        <option value="Q1">Q1</option>
+                        <option value="Q2">Q2</option>
+                        <option value="Q3">Q3</option>
+                        <option value="Q4">Q4</option>
+                    </select> -->
+                    <div name="foryear" id="yearSelector1">${generateYearSelector()}</div>
+                </td>
+                <td><textarea name="officialName[]" required oninput="adjustHeight(this)"></textarea></td>
+                <td><input type="date" name="dateofgiftgiven[]" ></td>
+                <td><textarea name="expenditure[]" required oninput="adjustHeight(this)"></textarea></td>
+                <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" onclick="addRow()">Add Row</button>
+    <div class="button-container">
+        <button type="submit" class="save-btn" onclick="setYear(); encodeInputs(); return validateForm()">Submit Form</button>
+    </div>
+</form>
+
+<script>
+    let srNo = 2;
+
+    function generateYearSelector() {
+        let currentYear = new Date().getFullYear();
+        let yearOptions = '<select name="foryear[]" required>';
+        yearOptions += '<option value="" disabled selected>Select Year</option>';
+        for (let i = currentYear; i >= currentYear - 100; i--) {
+            yearOptions += `<option value="${i}">${i}</option>`;
+        }
+        yearOptions += '</select>';
+        return yearOptions;
+    }
+
+    function addRow() {
+        const table = document.getElementById('expenditureTable').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>${srNo++}</td>
+           <td>
+                    
+                   
+                    <div id="yearSelector1">${generateYearSelector()}</div>
+                </td>
+            <td><textarea name="officialName[]" required oninput="adjustHeight(this)"></textarea></td>
+            <td><input type="date" name="dateofgiftgiven[]" ></td>
+            <td><textarea name="expenditure[]" required oninput="adjustHeight(this)"></textarea></td>
+            <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+        `;
+    }
+
+    function adjustHeight(element) {
+        element.style.height = "auto";
+        element.style.height = element.scrollHeight + "px";
+    }
+
+    function deleteRow(button) {
+        const row = button.parentNode.parentNode;
+        row.remove();
+        updateSrNo();
+    }
+
+    function updateSrNo() {
+        const rows = document.querySelectorAll("#expenditureTable tbody tr");
+        srNo = 1;
+        rows.forEach((row) => {
+            row.cells[0].textContent = srNo++;
+        });
+
+        if (rows.length === 0) {
+            srNo = 1;
+        }
+    }
+
+    
+
+    function validateForm() {
+        const form = document.getElementById('expenditureForm');
+        const inputs = form.querySelectorAll('input[required], textarea[required]');
+        let valid = true;
+
+        inputs.forEach(input => {
+            if (input.value.trim() === '') {
+                valid = false;
+                input.style.border = '1px solid red';  
+            } else {
+                input.style.border = '';  
+            }
+        });
+
+        if (!valid) {
+            alert("Please fill out all required fields correctly.");
+            return false;
+        }
+
+        alert("Form has been saved successfully!");
+        return true;
+    }
+
+    function encodeInputs() {
+        document.querySelectorAll("textarea[name='officialName[]'], input[name='expenditure[]']").forEach(input => {
+            input.value = input.value.replace(/,/g, '|');  
+        });
+    }
+
+
+    function populateYearDropdown() {
+    const yearSelector = document.getElementById("yearSelector");
+    const currentYear = new Date().getFullYear(); // Get the current year
+    const startYear = 1800; // Starting year for the dropdown
+
+    // Clear existing options
+    yearSelector.innerHTML = "";
+
+    // Add years from startYear to currentYear
+    for (let year = currentYear; year >= startYear; year--) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        yearSelector.appendChild(option);
+    }
+}
+
+// Call the function to populate the dropdown when the page loads
+window.onload = populateYearDropdown;
+
+// Initialize the year selector for the first row
+document.getElementById('yearSelector1').innerHTML = generateYearSelector();
+</script>
+
+</body>
+</html>

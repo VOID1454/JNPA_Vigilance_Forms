@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annexure 'C'</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        h1 {
+        margin-top: 80px; /* Adjust the value as needed */
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        textarea {
+            width: 100%;
+            border: 1px solid black;
+            padding: 4px;
+            box-sizing: border-box;
+            resize: none;
+            min-height: 40px;
+            overflow: hidden;
+        }
+        td input, td select {
+            width: 100%;
+            padding: 4px;
+            border: none;
+            box-sizing: border-box;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50; /* Green color */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .add-row-btn {
+            margin-right: auto; /* Pushes the button to the left */
+        }
+        .save-btn {
+            margin-left: auto; /* Pushes the button to the right */
+            margin-right: auto; /* Centers the button */
+        }
+        .save-container {
+            text-align: center; /* Center the save button */
+            margin-top: 20px; /* Add some space above the save button */
+        }
+        th {
+    background-color: #6fa7eb;
+}
+    </style>
+
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+
+
+    
+
+    <header th:insert="~{fragments/header.html :: header}"></header>
+   <script src="/static/js/scripts.js"></script>
+
+
+<div class="container">
+    <h1>Form- 5, Annexure 'C'</h1>
+    <h2>लंबित लघु / बड़ी शास्ति की कार्रवाइयाँ (सतर्कता सांविधिक संबंधी मामलों का विवरण) :</h2>
+    <h2>Statement showing details of Major / Minor Penalty Proceedings pending (Non-Vigilance related cases):</h2>
+    <h2>Department : <span th:text="${session.department}"></span></h2>
+    
+
+    <form action="/form52/saveform5C" method="POST" onsubmit=" encodeInputs(); return validateForm()">
+        <table id="chargeSheetTable">
+            <thead>
+                <tr>
+                    <th>क्र. सं.<br>Sr. No.</th>
+                    <th>For Month / Year</th>
+                    <th>आरोपी अधिकारी का नाम और पदनाम<br>Name & Designation of the Charged Officer</th>
+                    <th>आरोप पत्र जारी होने की तारीख<br>Date of issue of Charge Sheet</th>
+                    <th>जाँच अधिकारी की नियुक्ति की तारीख<br>Date of appointment of inquiring Officer</th>
+                    <th>मामले का संक्षिप्त विवरण<br>Brief history of the case</th>
+                    <th>मामले की वर्तमान स्थिति<br>Present position of the case</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="srNo">1</td>
+                    <td>
+                    
+                        <select name="forquarter[]" required>
+                            <option value="" disabled selected>Select Month</option>
+                            <option value="January">January</option>
+<option value="February">February</option>
+<option value="March">March</option>
+<option value="April">April</option>
+<option value="May">May</option>
+<option value="June">June</option>
+<option value="July">July</option>
+<option value="August">August</option>
+<option value="September">September</option>
+<option value="October">October</option>
+<option value="November">November</option>
+<option value="December">December</option>
+                        </select>
+                        <div id="yearSelector1">${generateYearSelector()}</div>
+                    </td>
+                    <td><textarea name="officerName[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><input type="date" name="chargeSheetDate[]" ></td>
+                    <!-- <td><input type="date" name="inquiringOfficerAppointmentDate[]" required></td> -->
+                     <td>
+    <label>
+        <input type="radio" name="inquiringOfficerAppointment" value="yes" onclick="toggleDateInput(this)"> Yes
+    </label>
+    <label>
+        <input type="radio" name="inquiringOfficerAppointment" value="no" onclick="toggleDateInput(this)"> No
+    </label>
+    <input type="date" name="inquiringOfficerAppointmentDate[]" style="display:none;" required>
+    <input type="text" name="inquiringOfficerAppointmentDate[]" value="Not Appointed" style="display:none;" readonly>
+</td>
+                    <td><textarea name="caseBrief[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="currentStatus[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="remarks[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                </tr>
+            </tbody>
+            </table>
+            
+            <div class="buttons">
+                <button type="button" class="add-row-btn" onclick="addRow()">Add Row</button>
+            </div>
+            <div class="save-container">
+                <button type="submit" class="save-btn">Submit Form</button>
+            </div>
+            
+            <script>
+            let srNo = 2; // Initialize serial number
+            
+            function addRow() {
+                const table = document.getElementById("chargeSheetTable").getElementsByTagName('tbody')[0];
+                const newRow = table.insertRow();
+            
+                newRow.innerHTML = `
+                    <td>${srNo}</td>
+                     <td>
+                    
+                        <select name="forquarter[]" required>
+                            <option value="" disabled selected>Select Quarter</option>
+                            <option value="Q1">Q1</option>
+                            <option value="Q2">Q2</option>
+                            <option value="Q3">Q3</option>
+                            <option value="Q4">Q4</option>
+                        </select>
+                        <div id="yearSelector1">${generateYearSelector()}</div>
+                    </td>
+                    <td><textarea name="officerName[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><input type="date" name="chargeSheetDate[]" ></td>
+                    <td><input type="date" name="inquiringOfficerAppointmentDate[]" required></td>
+                    <td><textarea name="caseBrief[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="currentStatus[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="remarks[]" required oninput="autoResize(this)"></textarea></td>
+                    <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                `;
+
+                
+            
+                srNo++; // Increment serial number for the next row
+            }
+
+
+
+               function toggleDateInput(radio) {
+       const td = radio.closest('td');
+       const dateInput = td.querySelector('input[type="date"]');
+       const statusInput = td.querySelector('input[type="text"]');
+       if (radio.value === "yes") {
+           dateInput.style.display = "block";
+           dateInput.required = true;
+           statusInput.style.display = "none";
+           statusInput.value = "";
+       } else {
+           dateInput.style.display = "none";
+           dateInput.required = false; 
+           dateInput.value = ""; 
+           statusInput.style.display = "block";
+           statusInput.value = "Not Appointed"; // Ensure this is set correctly
+       }
+   }
+   
+            function generateYearSelector() {
+        let currentYear = new Date().getFullYear();
+        let yearOptions = '<select name="foryear[]" required>';
+        yearOptions += '<option value="" disabled selected>Select Year</option>';
+        for (let i = currentYear; i >= currentYear - 100; i--) {
+            yearOptions += `<option value="${i}">${i}</option>`;
+        }
+        yearOptions += '</select>';
+        return yearOptions;
+    }
+
+    function deleteRow(button) {
+        var row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+        updateSrNo(); // Update the serial numbers after deleting the row
+    }
+
+    function updateSrNo() {
+        var rows = document.getElementById("chargeSheetTable").rows;
+        for (var i = 1; i < rows.length; i++) {
+            rows[i].cells[0].textContent = i; // Update serial number in each row
+        }
+    }
+
+    function validateForm() {
+        // Check if any required field is empty
+        var isValid = true;
+        var inputs = document.querySelectorAll("input[required]");
+        inputs.forEach(function(input) {
+            if (!input.value) {
+                isValid = false;
+            }
+        });
+        
+        // If the form is valid, show alert
+        if (isValid) {
+            alert("Form saved successfully!");
+        } else {
+            alert("Please fill out all required fields.");
+        }
+
+        return isValid; // Allow form submission if valid, otherwise prevent it
+    }
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+    function encodeInputs() {
+    document.querySelectorAll("textarea, input").forEach(input => {
+        input.value = input.value.replace(/,/g, '|');  // Replace commas with "|"
+    });
+}
+
+// Initialize the year selector for the first row
+document.getElementById('yearSelector1').innerHTML = generateYearSelector();
+</script>
+
+</body>
+</html>

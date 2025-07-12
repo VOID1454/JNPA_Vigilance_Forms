@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>users</title>
+</head>
+<body>
+    <h1>users</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th rowspan="2">Staff No</th>
+                <th rowspan="2">Username</th>
+                <th colspan="10">Forms submitted</th>
+                
+            </tr>
+
+            <tr>
+                <th >form-1</th>
+                <th >form-2</th>
+                <th >form-3</th>
+                <th >form-4</th>
+                <th >form-5.1</th>
+                <th >form-5.2</th>
+                <th >form-5A</th>
+                <th >form-5B</th>
+                <th >form-5C</th>
+                <th >form-6</th>
+              </tr>
+
+        </thead>
+
+        <tbody>
+            <tr th:each="userdata : ${userdata}">
+                <td th:text="${userdata.staffno}"></td>
+                <td th:text="${userdata.createdBy}"></td>
+                
+            </tr>
+            
+        </tbody>
+        
+    </table>
+</body>
+</html>

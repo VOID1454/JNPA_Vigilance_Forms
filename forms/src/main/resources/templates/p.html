@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Verify Records</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Header Styles */
+        h1 {
+            text-align: left;  
+            color: #000000;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Subheading Styles */
+        h2 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            table-layout: fixed;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        th {
+            background-color: #1a5ca7;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        /* Table Border Styling */
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        /* Row Hover Effect */
+        tr:hover {
+            background-color: #f1f9ff;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Alternating Row Background Color */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Button Styles */
+        button {
+            background-color: #1a5ca7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #145a86;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header th:insert="~{fragments/adminheader.html :: header}"></header>
+  
+    <h1>Verify Records</h1>
+    <button onclick="exportToExcel()">Export to Excel</button>
+    <button onclick="exportToPDF()">Export to PDF</button><br>
+
+    <!-- Buttons for each table -->
+    <button onclick="showTable('table-1')">Form 1</button>
+    <button onclick="showTable('table-2')">Form 2</button>
+    <button onclick="showTable('table-3')">Form 3</button>
+    <button onclick="showTable('table-4')">Form 4</button>
+    <button onclick="showTable('table-51')">Form 5.1</button>
+    <button onclick="showTable('table-52')">Form 5.2</button>
+    <button onclick="showTable('table-5A')">Form 5A</button>
+    <button onclick="showTable('table-5B')">Form 5B</button>
+    <button onclick="showTable('table-5C')">Form 5C</button>
+    <button onclick="showTable('table-6')">Form 6</button>
+    
+    <!-- View All Button -->
+    <button onclick="showAllTables()">View All</button>
+
+    <div id="table-1" class="table-container">
+        <h2>Form-1 Expenditure on Gifts</h2>
+        <table id="Expenditure">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Name & Designation of the Government Official</th>
+                    <th>Date on which gift has been given</th>
+                    <th>Expenditure incurred by JNPT (Rs.)</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="expenditure : ${approverData.expenditures}" th:if="${expenditure.Verified}">
+                    <td th:text="${expenditure.id}"></td>
+                    <td th:text="${expenditure.staffno}"></td>
+                    <td th:text="${expenditure.createdBy}"></td>
+                    <td th:text="${expenditure.officialName}"></td>
+                    <td th:text="${expenditure.dateofgiftgiven}"></td>
+                    <td th:text="${expenditure.expenditure}"></td>
+                    <td th:text="${expenditure.createdAt}"></td>
+                    <td th:text="${expenditure.Verified}"></td>
+                    <td>
+                        <form th:action="@{/approver/verifyentry}" method="post">
+                            <input type="hidden" name="id" th:value="${expenditure.id}"/>
+                            <input type="hidden" name="entityType" value="expenditure"/>
+                            <button type="submit" class="verify-button">Verify</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-2" class="table-container">
+        <h2>Form-2 Statement showing quarterly Progress of Original Work</h2>
+        <table id="ProgressOfWork">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Item / Nature of Work</th>
+                    <th>Estimated Cost (Rs.)</th>
+                    <th>Tendered Cost (Rs.)</th>
+                    <th>% Above/Below Schedule Rates</th>
+                    <th>Agreement No.</th>
+                    <th>Date of Commencement</th>
+                    <th>Time of Completion</th>
+                    <th>Physical Progress (%)</th>
+                    <th>Name of Engineer In-Charge</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="progress : ${approverData.progressOfWorks}" th:if="${progress.Verified}">
+                    <td th:text="${progress.id}"></td>
+                    <td th:text="${progress.staffno}"></td>
+                    <td th:text="${progress.createdBy}"></td>
+                    <td th:text="${progress.itemName}"></td>
+                    <td th:text="${progress.estimatedCost}"></td>
+                    <td th:text="${progress.tenderedCost}"></td>
+                    <td th:text="${progress.ratePercentage}"></td>
+                    <td th:text="${progress.agreementNo}"></td>
+                    <td th:text="${progress.commencementDate}"></td>
+                    <td th:text="${progress.completionTime}"></td>
+                    <td th:text="${progress.physicalProgress}"></td>
+                    <td th:text="${progress.engineerName}"></td>
+                    <td th:text="${progress.remarks}"></td>
+                    <td th:text="${progress.createdAt}"></td>
+                    <td th:text="${progress.Verified}"></td>
+                    <td>
+                        <form th:action="@{/approver/verifyentry}" method="post">
+                            <input type="hidden" name="id" th:value="${progress.id}"/>
+                            <input type="hidden" name="entityType" value="progressOfWork"/>
+                            <button type="submit" class="verify-button">Verify</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-3" class="table-container">
+        <h2>Form-3 Statement showing quarterly Progress of Original Work (Civil)</h2>
+        <table id="ProgressOfWorkCivil">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Name of Works</th>
+                    <th>Estimated Cost (Rs. in Lakhs)</th>
+                    <th>Tendered Cost (Rs. in Lakhs)</th>
+                    <th>% Above/Below Schedule Rates</th>
+                    <th>Agreement No.</th>
+                    < th>Agency</th>
+                    <th>Date of Commencement</th>
+                    <th>Time of Completion</th>
+                    <th>Physical Progress (%)</th>
+                    <th>Name of Engineer In-Charge</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="civil : ${approverData.progressOfWorkCivils}" th:if="${civil.Verified}">
+                    <td th:text="${civil.id}"></td>
+                    <td th:text="${civil.staffno}"></td>
+                    <td th:text="${civil.createdBy}"></td>
+                    <td th:text="${civil.descriptionOfWork}"></td>
+                    <td th:text="${civil.estimatedCost}"></td>
+                    <td th:text="${civil.tenderedCost}"></td>
+                    <td th:text="${civil.ratePercentage}"></td>
+                    <td th:text="${civil.agreementNo}"></td>
+                    <td th:text="${civil.agency}"></td>
+                    <td th:text="${civil.commencementDate}"></td>
+                    <td th:text="${civil.completionTime}"></td>
+                    <td th:text="${civil.physicalProgress}"></td>
+                    <td th:text="${civil.engineerInCharge}"></td>
+                    <td th:text="${civil.remarks}"></td>
+                    <td th:text="${civil.createdAt}"></td>
+                    <td th:text="${civil.Verified}"></td>
+                    <td>
+                        <form th:action="@{/approver/verifyentry}" method="post">
+                            <input type="hidden" name="id" th:value="${civil.id}"/>
+                            <input type="hidden" name="entityType" value="progressOfWorkCivil"/>
+                            <button type="submit" class="verify-button">Verify</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-4" class="table-container">
+        <h2>Form-4 Foreign Visit by the JNPA employees</h2>
+        <table id="ForeignVisits">
+            <thead>
+                <tr>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Name & Designation of the Officer/Staff</th>
+                    <th>Name of Country Visited</th>
+                    <th>Duration of Stay</th>
+                    <th>Source of Funding</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="visit : ${approverData.foreignVisits}" th:if="${visit.Verified}">
+                    <td th:text="${visit.staffno}"></td>
+                    <td th:text="${visit.createdBy}"></td>
+                    <td th:text="${visit.nameDesignation}"></td>
+                    <td th:text="${visit.countryVisited}"></td>
+                    <td th:text="${visit.durationOfStay}"></td>
+                    <td th:text="${visit.sourceOfFunding}"></td>
+                    <td th:text="${visit.remarks}"></td>
+                    <td th:text="${visit.createdAt}"></td>
+                    <td th:text="${visit.Verified}"></td>
+                    <td>
+                        <form th:action="@{/approver/verifyentry}" method="post">
+                            <input type="hidden" name="id" th:value="${visit.id}"/>
+                            <input type="hidden" name="entityType" value="foreignVisit"/>
+                            <button type="submit" class="verify-button">Verify</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-51" class="table-container">
+        <h2>Form-5.1 Suspension Cases</h2>
+        <table id="SuspensionReport">
+            <thead>
+                <tr>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Suspended Persons at Start of Month</th>
+                    <th>Suspended Persons during Month</th>
+                    <th>Suspension Revoked</th>
+                    <th>Persons Suspended (1-3 Months)</th>
+                    <th>Persons Suspended (3-6 Months)</th>
+                    <th>Persons Suspended (Over 6 Months)</th>
+                    <th>Total Persons under Suspension at End of Month</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Action</th>
+                

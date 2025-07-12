@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jawaharlal Nehru Port Authority - Penalty Cases</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            word-wrap: break-word;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            overflow-wrap: break-word;
+        }
+
+        th {
+            background-color: #6fa7eb;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid black;
+            padding: 4px;
+            box-sizing: border-box;
+            resize: none;
+            min-height: 40px;
+            overflow: hidden;
+        }
+
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+        }
+
+        .delete-button:hover {
+            background-color: #da190b;
+        }
+
+        .save-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #4CAF50;
+        }
+
+        h1 {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px; /* Space below the heading */
+        }
+
+        p {
+            margin: 15px 0; /* Space above and below each paragraph */
+        }
+    </style>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+<header th:insert="~{fragments/header.html :: header}"></header>
+<script src="/static/js/scripts.js"></script>
+<h1>Form- 5.2</h1>
+<h2>बड़ी / लघु शास्ति के मामले :</h2>
+<h2>MAJOR / MINOR PENALTY CASES:</h2>
+<h2>Department : <span th:text="${session.department}"></span></h2>
+
+<form id="penaltyForm" onsubmit="submitForm(event)">
+    <table id="penaltyTable">
+        <thead>
+            <tr>
+                <th>For Month / Year</th>
+                <th colspan="2">इस माह के आरंभ में लंबित मामलों की संख्या<br>No. of cases pending in the beginning of the month</th>
+                <th colspan="2">माह के दौरान शुरू किए गए मामलों की संख्या<br>No. of fresh cases initiated during the month</th>
+                <th colspan="2">माह के दौरान समाप्त किए गए मामलों की संख्या<br>No. of cases finalized during the month</th>
+                <th colspan="2">माह के अंत में लंबित मामलों की कुल संख्या<br>Total no. of cases pending at the end of the month</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>बड़े<br>Major</th>
+                <th>लघु<br>Minor</th>
+                <th>बड़े<br>Major</th>
+                <th>लघु<br>Minor</th>
+                <th>बड़े<br>Major</th>
+                <th>लघु<br>Minor</th>
+                <th>बड़े<br>Major</th>
+                <th>लघु<br>Minor</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <select name="forquarter[]" required>
+                        <option value="" disabled selected>Select Month</option>
+                       <option value="January">January</option>
+<option value="February">February</option>
+<option value="March">March</option>
+<option value="April">April</option>
+<option value="May">May</option>
+<option value="June">June</option>
+<option value="July">July</option>
+<option value="August">August</option>
+<option value="September">September</option>
+<option value="October">October</option>
+<option value="November">November</option>
+<option value="December">December</option>
+                    </select>
+                    <div id="yearSelector1">${generateYearSelector()}</div>
+                </td>
+                <td><input type="text" name="majorPendingStart[]" required></td>
+                <td><input type="text" name="minorPendingStart[]" required></td>
+                <td><input type="text" name="majorInitiated[]" required></td>
+                <td><input type="text" name="minorInitiated[]" required></td>
+                <td><input type="text" name="majorFinalized[]" required></td>
+                <td><input type="text" name="minorFinalized[]" required></td>
+                <td><input type="text" name="majorPendingEnd[]" required></td>
+                <td><input type="text" name="minorPendingEnd[]" required></td>
+                <td><button type="button" class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" onclick="addRow()">Add Row</button>
+    <button type="submit" class="save-btn">Submit Form</button>
+</form>
+
+<script>
+    let srNo = 2;
+
+    function generateYearSelector() {
+        let currentYear = new Date().getFullYear();
+        let yearOptions = '<select name="foryear[]" required>';
+        yearOptions += '<option value="" disabled selected>Select Year</option>';
+        for (let i = currentYear; i >= currentYear - 100; i--) {
+            yearOptions += `<option value="${i}">${i}</option>`;
+        }
+        yearOptions += '</select>';
+        return yearOptions;
+    }
+
+    function addRow() {
+        const table = document.getElementById('penaltyTable').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>
+                <select name="forquarter[]" required>
+                    <option value="" disabled selected>Select Quarter</option>
+                    <option value="Q1">Q1</option>
+                    <option value="Q2">Q2</option>
+                    <option value="Q3">Q3</option>
+                    <option value="Q4">Q4</option>
+                </select>
+                <div id="yearSelector${srNo}">${generateYearSelector()}</div>
+            </td>
+            <td><input type="text" name="majorPendingStart[]" required></td>
+            <td><input type="text" name="minorPendingStart[]" required></td>
+            <td><input type="text" name="majorInitiated[]" required></td>
+            <td><input type="text" name="minorInitiated[]" required></td>
+            <td><input type="text" name="majorFinalized[]" required></td>
+            <td><input type="text" name="minorFinalized[]" required></td>
+            <td><input type="text" name="majorPendingEnd[]" required></td>
+            <td><input type="text" name="minorPendingEnd[]" required></td>
+            <td><button type="button" class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+        `;
+        srNo++;
+    }
+
+    function deleteRow(button) {
+        const row = button.parentElement.parentElement;
+        row.parentElement.removeChild(row);
+    }
+
+    function submitForm(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const rows = document.querySelectorAll('#penaltyTable tbody tr');
+        let isValid = true;
+
+
+
+            //create an access layer for the dataflow and remerge the flow
+        // Validate all fields in each row
+        rows.forEach(row => {
+            const quarter = row.querySelector('select[name="forquarter[]"]').value;
+            const year = row.querySelector('select[name="foryear[]"]').value;
+            const majorPendingStart = row.querySelector('input[name="majorPendingStart[]"]').value;
+            const minorPendingStart = row.querySelector('input[name="minorPendingStart[]"]').value;
+            const majorInitiated = row.querySelector('input[name="majorInitiated[]"]').value;
+            const minorInitiated = row.querySelector('input[name="minorInitiated[]"]').value;
+            const majorFinalized = row.querySelector('input[name="majorFinalized[]"]').value;
+            const minorFinalized = row.querySelector('input[name="minorFinalized[]"]').value;
+            const majorPendingEnd = row.querySelector('input[name="majorPendingEnd[]"]').value;
+            const minorPendingEnd = row.querySelector('input[name="minorPendingEnd[]"]').value;
+
+            if (!quarter || !year || !majorPendingStart || !minorPendingStart || !majorInitiated || !minorInitiated || !majorFinalized || !minorFinalized || !majorPendingEnd || !minorPendingEnd) {
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            alert("Please fill in all fields before submitting the form.");
+            return; 
+        }
+
+        const formData = [];
+        rows.forEach(row => {
+            const quarter = row.querySelector('select[name="forquarter[]"]').value;
+            const year = row.querySelector('select[name="foryear[]"]').value;
+            const majorPendingStart = row.querySelector('input[name="majorPendingStart[]"]').value;
+            const minorPendingStart = row.querySelector('input[name="minorPendingStart[]"]').value;
+            const majorInitiated = row.querySelector('input[name="majorInitiated[]"]').value;
+            const minorInitiated = row.querySelector('input[name="minorInitiated[]"]').value;
+            const majorFinalized = row.querySelector('input[name="majorFinalized[]"]').value;
+            const minorFinalized = row.querySelector('input[name="minorFinalized[]"]').value;
+            const majorPendingEnd = row.querySelector('input[name="majorPendingEnd[]"]').value;
+            const minorPendingEnd = row.querySelector('input[name="minorPendingEnd[]"]').value;
+
+            formData.push({
+                forquarter: quarter,
+                foryear: year,
+                majorPendingStart: majorPendingStart,
+                minorPendingStart: minorPendingStart,
+                majorInitiated: majorInitiated,
+                minorInitiated: minorInitiated,
+                majorFinalized: majorFinalized,
+                minorFinalized: minorFinalized,
+                majorPendingEnd: majorPendingEnd,
+                minorPendingEnd: minorPendingEnd
+            });
+        });
+
+        // Send the data to the backend
+        fetch('/user/save-penalty-cases', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show a success message
+            window.location.reload(); // Refresh the page
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Initialize the year selector for the first row
+    document.getElementById('yearSelector1').innerHTML = generateYearSelector();
+</script>
+
+</body>
+</html>

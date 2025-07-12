@@ -1,0 +1,14 @@
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+    <header th:insert="~{fragments/header.html :: header}"></header>
+   <script src="/static/js/scripts.js"></script>
+
+
+
+
+
+
+
+

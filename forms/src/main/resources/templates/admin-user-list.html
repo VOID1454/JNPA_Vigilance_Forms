@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - User List</title>
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<body>
+    <h1>User List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Staff Number</th>
+                <th>Username</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.staffno != null ? user.staffno : 'N/A'}"></td>
+                <td th:text="${user.username}"></td>
+                <td>
+                    <a th:href="@{'/admin/view-user-data'(staffno=${user.staffno})}" class="btn btn-primary">View</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

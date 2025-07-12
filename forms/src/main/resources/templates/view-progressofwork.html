@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Form-2</title>
+    <link rel="stylesheet" type="text/css" href="/css/view.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <style>
+        h2 {
+            text-align: center; /* Center the text */
+        }
+        .filter-input {
+            margin: 5px;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+    <script src="/js/export.js"></script>
+    
+    <h1>Form- 2</h1>
+    <h2>Statement Showing Quarterly Progress Of Original Work For Quarter Ending</h2>
+    <p> 1. Electrical works (including mechanical, electronics and computer) Consultancy contract / Service contract / Manpower supply, etc. Costing Rs.100 lakhs and above.</p>
+
+    <button onclick="exportToExcel()">Export to Excel</button>
+    
+    <table id="progressofwork" border="1">
+        <thead>
+            <tr>
+                <th>Staff No</th>
+                <th>Username</th>
+                <th>For Quarter</th>
+                <th>For Year</th>
+                <th>For Department</th>
+                <th>Item / Nature of Work</th>
+                <th>Estimated Cost (Rs.)</th>
+                <th>Tendered Cost (Rs.)</th>
+                <th>% Above/Below Schedule Rates</th>
+                <th>Agreement No.</th>
+                <th>Date of Commencement</th>
+                <th>Time of Completion</th>
+                <th>Physical Progress (%)</th>
+                <th>Name of Engineer In-Charge</th>
+                <th>Remarks</th>
+                <th>CreatedAt</th>
+                <th>Verified</th>
+            </tr>
+            <tr>
+                <th><input type="text" class="filter-input" placeholder="Filter Staff No"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Username"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter For Quarter"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter For Year"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter For Department"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Item"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Estimated Cost"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Tendered Cost"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter % Above/Below"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Agreement No"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Commencement Date"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Completion Time"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Physical Progress"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Engineer In-Charge"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Remarks"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter CreatedAt"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Verified"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="progressofwork : ${progressofwork}">
+                <td th:text="${progressofwork.staffno}"></td>
+                <td th:text="${progressofwork.createdBy}"></td> 
+                <td th:text="${progressofwork.forquarter}"></td>
+                <td th:text="${progressofwork.foryear}"></td> 
+                <td th:text="${progressofwork.fordepartment}"></td> 
+                <td th:text="${progressofwork.itemName}"></td>
+                <td th:text="${progressofwork.estimatedCost}"></td>
+                <td th:text="${progressofwork.tenderedCost}"></td>
+                <td th:text="${progressofwork.ratePercentage}"></td>
+                <td th:text="${progressofwork.agreementNo}"></td>
+                <td th:text="${progressofwork.commencementDate}"></td>
+                <td th:text="${progressofwork.completionTime}"></td>
+                <td th:text="${progressofwork.physicalProgress}"></td>
+                <td th:text="${progressofwork.engineerName}"></td>
+                <td th:text="${progressofwork.remarks}"></td>
+                <td th:text="${progressofwork.createdAt}"></td>
+                <td th:text="${progressofwork.verified}"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+ 
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables
+            var table = $('#progressofwork').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                language: {
+                    search: "Search: " // Customize search bar label
+                }
+            });
+
+            // Custom filtering for each column
+            $('.filter-input').on('keyup change', function () {
+                var index = $(this).parent().index();
+                table.column(index).search(this.value).draw();
+            });
+        });
+
+        function exportToExcel() {
+            var table = document.getElementById("progressofwork");
+            var wb = XLSX.utils.table_to_book(table, { sheet: "progressofwork" });
+            XLSX.writeFile(wb, "progressofwork.xlsx");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foreign Visit Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        h1 {
+            margin-top: 80px; /* Adjust the value as needed */
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        textarea {
+            width: 100%;
+            border: 1px solid black;
+            padding: 4px;
+            box-sizing: border-box;
+            resize: none;
+            min-height: 40px;
+            overflow: hidden;
+        }
+
+        td input {
+            width: 100%;
+            border: none;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .save-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #45a049;
+        }
+        h2 {
+            margin-bottom: 20px; /* Space below the heading */
+        }
+        p {
+            margin: 15px 0; /* Space above and below each paragraph */
+        }
+        th {
+    background-color: #6fa7eb;
+}
+        
+    </style>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+
+<div class="container">
+    <h1>Form- 4</h1>
+    <h2>Foreign Visit Form</h2>
+    <h2>Subject: Foreign Visit by the JNPA employees</h2>
+    <h2>Department : <span th:text="${session.department}"></span></h2>
+    
+
+    <form id="foreignVisitForm" action="/user/save-table-4" method="POST" onsubmit=" encodeInputs(); return validateForm()">
+        <table id="foreignVisitTable">
+            <thead>
+                <tr>
+                    <th>Sr. No</th>
+                    <th>For Year</th>
+                    <th>Name & Designation of the officer/staff & staff No.</th>
+                    <th>Staff no</th>
+                    <th>Name of the Country Visited</th>
+                    <th>Duration of Stay</th>
+                    <th>Source of Funding</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>
+                    
+                        <!-- <select name="forquarter[]" required>
+                            <option value="" disabled selected>Select Quarter</option>
+                            <option value="Q1">Q1</option>
+                            <option value="Q2">Q2</option>
+                            <option value="Q3">Q3</option>
+                            <option value="Q4">Q4</option>
+                        </select> -->
+                        <div id="yearSelector1">${generateYearSelector()}</div>
+                    </td>
+                    <td><textarea name="nameDesignation[]" placeholder="Enter name & designation" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="estaffno[]" placeholder="Enter staffno" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="countryVisited[]" placeholder="Enter country visited" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="durationOfStay[]" placeholder="Enter duration of stay" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="sourceOfFunding[]" placeholder="Enter source of funding" required oninput="autoResize(this)"></textarea></td>
+                    <td><textarea name="remarks[]" placeholder="Enter remarks" oninput="autoResize(this)"></textarea></td>
+                    <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                </tr>
+            </tbody>
+            </table>
+            <p></p>
+            <p> If no employee of any department has visited foreign country on personal tour during the calender year20......(i.e. 01/01/20..... to 31/12/20.....) then "Nil" report may be sent to Vigilance Department Immediately</p>
+            <p></p>
+            <button type="button" onclick="addRow()">Add Row</button>
+            <button type="submit" class="save-btn">Submit Form</button>
+            
+            <script>
+                let srNo = 2; // Initialize serial number for new rows
+                
+                function generateYearSelector() {
+        let currentYear = new Date().getFullYear();
+        let yearOptions = '<select name="foryear[]" required>';
+        yearOptions += '<option value="" disabled selected>Select Year</option>';
+        for (let i = currentYear; i >= currentYear - 100; i--) {
+            yearOptions += `<option value="${i}">${i}</option>`;
+        }
+        yearOptions += '</select>';
+        return yearOptions;
+    }
+                // Function to add a new row to the table
+                function addRow() {
+                    const table = document.getElementById('foreignVisitTable').getElementsByTagName('tbody')[0];
+                    const newRow = table.insertRow();
+                    newRow.innerHTML = `
+                        <td>${srNo}</td>
+                        <td>
+                
+                
+                <div id="yearSelector${srNo}">${generateYearSelector()}</div>
+            </td>
+                        <td><textarea name="nameDesignation[]" placeholder="Enter name & designation" required oninput="autoResize(this)"></textarea></td>
+                        <td><textarea name="estaffno[]" placeholder="Enter staffno" required oninput="autoResize(this)"></textarea></td>
+                        <td><textarea name="countryVisited[]" placeholder="Enter country visited" required oninput="autoResize(this)"></textarea></td>
+                        <td><textarea name="durationOfStay[]" placeholder="Enter duration of stay" required oninput="autoResize(this)"></textarea></td>
+                        <td><textarea name="sourceOfFunding[]" placeholder="Enter source of funding" required oninput="autoResize(this)"></textarea></td>
+                        <td><textarea name="remarks[]" placeholder="Enter remarks" oninput="autoResize(this)"></textarea></td>
+                        <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>`;
+                    srNo++;
+                }
+            
+            
+
+    // Function to delete a row
+    function deleteRow(button) {
+        const row = button.parentElement.parentElement;
+        row.parentElement.removeChild(row);
+        updateSerialNumbers(); // Update serial numbers after deletion
+    }
+
+    // Function to update serial numbers after a row is deleted
+    function updateSerialNumbers() {
+        const rows = document.querySelectorAll("#foreignVisitTable tbody tr");
+        srNo = 1; // Reset serial number
+        rows.forEach((row) => {
+            row.cells[0].textContent = srNo++;
+        });
+    }
+
+    // Form validation function
+    function validateForm() {
+        const inputs = document.querySelectorAll('#foreignVisitForm input[required]');
+        let valid = true;
+        inputs.forEach((input) => {
+            if (!input.value.trim()) {
+                valid = false;
+                input.style.borderColor = 'red'; // Highlight missing fields
+            } else {
+                input.style.borderColor = ''; // Reset border color if valid
+            }
+        });
+
+        if (valid) {
+            alert('Form submitted successfully!');
+        } else {
+            alert('Please fill in all required fields.');
+        }
+        return valid; // Only submit if all required fields are filled
+    }
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    function encodeInputs() {
+    document.querySelectorAll("textarea, input").forEach(input => {
+        input.value = input.value.replace(/,/g, '|');  // Replace commas with "|"
+    });
+}
+// Initialize the year selector for the first row
+document.getElementById('yearSelector1').innerHTML = generateYearSelector();
+</script>
+
+</body>
+</html>

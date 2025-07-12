@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5 text-center">
+        <h2>Welcome to User Dashboard</h2>
+        <p>You are logged in as a User.</p>
+        
+        
+        <p>Welcome, <span th:text="${username}"></span>!</p>
+		<p>Your Role: <span th:text="${roles}"></span></p> 
+		<p>Your StaffNo: <span th:text="${staffno}"></span></p> 
+
+        <a href="/logout" class="btn btn-danger">Logout</a>
+    </div>
+</body>
+</html>

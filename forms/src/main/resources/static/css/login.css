@@ -1,0 +1,142 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+/* Header Container #007BFF, #00A2E8 */
+.header-container {
+    background: linear-gradient(to right, #007BFF, #00A2E8);
+    color: white;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-left: 20px; /* Space from the left edge */
+}
+
+/* Navigation Menu */
+nav {
+    flex-grow: 1;
+}
+
+.menu {
+    display: flex;
+    list-style-type: none;
+    justify-content: flex-end; /* Aligns menu items to the right */
+    width: 100%;
+    padding-right: 20px; /* Space from the right edge */
+}
+
+.menu li {
+    position: relative;
+    margin: 0 15px;
+}
+
+.menu li a {
+    display: block;
+    color: white;
+    font-size: 16px;
+    padding: 12px 18px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.menu li a:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Dropdown Button Styling */
+.dropdown-toggle {
+    display: block;
+    background-color: #007bff; /* Button-like background color */
+    padding: 12px 18px;
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.dropdown-toggle:hover {
+    background-color: #0056b3; /* Button hover effect */
+    transform: scale(1.05); /* Slight scaling effect */
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0; /* Align dropdown to the right edge of the screen */
+    background-color: #0c0c0c;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    z-index: 1001;
+}
+
+.dropdown-menu li {
+    margin: 0;
+}
+
+.dropdown-menu li a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #333;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .menu li {
+        width: 100%;
+    }
+
+    .dropdown-menu {
+        position: static; /* Allow dropdown to fit dynamically */
+        width: 100%;
+    }
+}

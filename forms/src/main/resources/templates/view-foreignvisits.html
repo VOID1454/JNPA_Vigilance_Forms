@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Form-4</title>
+    <link rel="stylesheet" type="text/css" href="/css/view.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <style>
+        h2 {
+            text-align: center; /* Center the text */
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+    <script src="/js/export.js"></script>
+    <h1>Form- 4</h1>
+    <h2>Foreign Visit Form</h2>
+    <h2>Subject: Foreign Visit by the JNPA employees</h2>
+    <button onclick="exportToExcel()">Export to Excel</button>
+    <table id="foreignvisit" border="1">
+        <thead>
+            <tr>
+                <th>created by Staff No</th>
+                <th>Username</th>
+                <th>Name & Designation of the officer/staff & staff No.</th>
+                <th>Staff No</th>
+                <th>Name of Country visited</th>
+                <th>Duration of stay</th>
+                <th>Source of funding</th>
+                <th>Remarks</th>
+                <th>Verified</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="foreignVisit : ${foreignVisits}">
+                <td th:text="${foreignVisit.staffno}"></td>
+                <td th:text="${foreignVisit.createdBy}"></td>
+                <td th:text="${foreignVisit.nameDesignation}"></td>
+                <td th:text="${foreignVisit.estaffno}"></td>
+                <td th:text="${foreignVisit.countryVisited}"></td>
+                <td th:text="${foreignVisit.durationOfStay}"></td>
+                <td th:text="${foreignVisit.sourceOfFunding}"></td>
+                <td th:text="${foreignVisit.remarks}"></td>
+                <td th:text="${foreignVisit.Verified}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables without pagination
+            $('#foreignvisit').DataTable({
+                paging: true,      // Disable pagination
+                searching: true,    // Enable search functionality
+                ordering: true,     // Enable sorting
+                language: {
+                    search: "Search: " // Customize search bar label
+                }
+            });
+        });
+        function exportToExcel() {
+    var table = document.getElementById("foreignvisit");
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Foreign Visits" });
+    XLSX.writeFile(wb, "Foreign_Visits.xlsx");
+}
+    </script>
+</body>
+</html>

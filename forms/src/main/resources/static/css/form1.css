@@ -1,0 +1,76 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+td[contenteditable="true"]:hover {
+    background-color: #f9f9f9;
+    cursor: text;
+}
+
+input[type="date"],
+input[type="text"] {
+    width: 100%;
+    border: none;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    margin: 5px;
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.delete-btn {
+    background-color: #f44336;
+}
+
+.delete-btn:hover {
+    background-color: #da190b;
+}
+
+h1 {
+    margin-top: 80px;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+.save-btn {
+    display: block;
+    margin: 20px auto;
+    background-color: #2196F3;
+}
+
+.dropdown-container {
+    text-align: center;
+    margin: 20px 0;
+}

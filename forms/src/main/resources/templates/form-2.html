@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable Progress Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            word-wrap: break-word;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            overflow-wrap: break-word;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid black;
+            padding: 4px;
+            box-sizing: border-box;
+            resize: none;
+            min-height: 40px;
+            overflow: hidden;
+        }
+
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+        }
+
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .save-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #4CAF50;
+        }
+
+        h1 {
+            margin-top: 80px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+        
+        h2 {
+            margin-bottom: 20px; /* Space below the heading */
+        }
+        p {
+            margin: 15px 0; /* Space above and below each paragraph */
+        }
+        
+        .dropdown-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        th {
+    background-color: #6fa7eb;
+}
+    </style>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+<header th:insert="~{fragments/header.html :: header}"></header>
+<script src="/static/js/scripts.js"></script>
+<h1>Form- 2</h1>
+<h2>Statement Showing Quarterly Progress Of Original Work For Quarter Ending</h2>
+<p> 1. Electrical works (including mechanical, electronics and computer) Consultancy contract / Service contract / Manpower supply, etc. Costing Rs.100 lakhs and above.</p>
+<h2>Department : <span th:text="${session.department}"></span></h2>
+
+<form action="/user/save-progress" method="POST" onsubmit="return validateForm()">
+    <table id="progressTable">
+        <thead>
+            <tr>
+                <th>Sr. No</th>
+                <th>For Quarter / Year</th>
+                <th>Item / Nature of Work</th>
+                <th>Estimated Cost (Rs.)</th>
+                <th>Tendered Cost (Rs.)</th>
+                <th>% Above/Below Schedule Rates applicable</th>
+                <th>Agreement No.</th>
+                <th>Date of Commencement</th>
+                <th>Time of Completion</th>
+                <th>Physical Progress in (%)</th>
+                <th>Name of Engineer In-Charge with address</th>
+                <th>Remarks</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>
+                    
+                    <select name="forquarter[]" required>
+                        <option value="" disabled selected>Select Quarter</option>
+                        <option value="Q1">Q1</option>
+                        <option value="Q2">Q2</option>
+                        <option value="Q3">Q3</option>
+                        <option value="Q4">Q4</option>
+                    </select>
+                    <div id="yearSelector1">${generateYearSelector()}</div>
+                </td>
+                <td><textarea name="itemName[]" required oninput="autoResize(this)"></textarea></td>
+                <td><textarea name="estimatedCost[]" required oninput="autoResize(this)"></textarea></td>
+                <td><textarea name="tenderedCost[]" required oninput="autoResize(this)"></textarea></td>
+                <td><textarea name="ratePercentage[]" required oninput="autoResize(this)"></textarea></td>
+                <td><textarea name="agreementNo[]" required oninput="autoResize(this)"></textarea></td>
+                <td><input type="date" name="commencementDate[]" ></td>
+                <td><textarea name="completionTime[]" required oninput="autoResize(this)"></textarea></td>
+                <td><textarea name="physicalProgress[]" required oninput="autoResize(this)"></textarea></td>
+                <td><textarea name="engineerName[]" required oninput="autoResize(this)"></textarea></td>
+                <td><textarea name="remarks[]" required oninput="autoResize(this)"></textarea></td>
+                <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" onclick="addRow()">Add Row</button>
+    <button type="submit" class="save-btn">Submit Form</button>
+</form>
+
+<script>
+    let srNo = 2;
+
+    function generateYearSelector() {
+        let currentYear = new Date().getFullYear();
+        let yearOptions = '<select name="foryear[]" required>';
+        yearOptions += '<option value="" disabled selected>Select Year</option>';
+        for (let i = currentYear; i >= currentYear - 100; i--) {
+            yearOptions += `<option value="${i}">${i}</option>`;
+        }
+        yearOptions += '</select>';
+        return yearOptions;
+    }
+
+    function addRow() {
+        const table = document.getElementById('progressTable').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>${srNo}</td>
+            <td>
+                
+                <select name="forquarter[]" required>
+                    <option value="" disabled selected>Select Quarter</option>
+                    <option value="Q1">Q1</option>
+                    <option value="Q2">Q2</option>
+                    <option value="Q3">Q3</option>
+                    <option value="Q4">Q4</option>
+                </select>
+                <div id="yearSelector${srNo}">${generateYearSelector()}</div>
+            </td>
+            <td><textarea name="itemName[]" required oninput="autoResize(this)"></textarea></td>
+            <td><textarea name="estimatedCost[]" required oninput="autoResize(this)"></textarea></td>
+            <td><textarea name="tenderedCost[]" required oninput="autoResize(this)"></textarea></td>
+            <td><textarea name="ratePercentage[]" required oninput="autoResize(this)"></textarea></td>
+            <td><textarea name="agreementNo[]" required oninput="autoResize(this)"></textarea></td>
+            <td><input type="date" name="commencementDate[]" ></td>
+            <td><textarea name="completionTime[]" required oninput="autoResize(this)"></textarea></td>
+            <td><textarea name="physicalProgress[]" required oninput="autoResize(this)"></textarea></td>
+            <td><textarea name="engineerName[]" required oninput="autoResize(this)"></textarea></td>
+            <td><textarea name="remarks[]" required oninput="autoResize(this)"></textarea></td>
+            <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+        `;
+        srNo++;
+    }
+
+    function deleteRow(button) {
+        const row = button.parentElement.parentElement;
+        row.parentElement.removeChild(row);
+        updateSerialNumbers();
+    }
+
+    function updateSerialNumbers() {
+        const rows = document.querySelectorAll("#progressTable tbody tr");
+        srNo = 1;
+        rows.forEach((row) => {
+            row.cells[0].textContent = srNo++;
+        });
+    }
+
+    function validateForm() {
+        const inputs = document.querySelectorAll("textarea");
+        for (let input of inputs) {
+            if (input.value.trim() === "") {
+                alert("Please fill all required fields.");
+                return false;
+            }
+        }
+        alert("Table saved successfully !");
+        return true;
+    }
+
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // Initialize the year selector for the first row
+    document.getElementById('yearSelector1').innerHTML = generateYearSelector();
+</script>
+
+</body>
+</html>

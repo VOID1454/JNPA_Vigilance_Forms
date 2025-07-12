@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Verify Records</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Header Styles */
+        h1 {
+            text-align: left;  
+            color: #000000;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Subheading Styles */
+        h2 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            table-layout: fixed;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        th {
+            background-color: #1a5ca7;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        /* Table Border Styling */
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        /* Row Hover Effect */
+        tr:hover {
+            background-color: #f1f9ff;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Alternating Row Background Color */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Button Styles */
+        button {
+            background-color: #1a5ca7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #145a86;
+        }
+
+        .hod-button {
+    padding: 5px 10px;
+    margin: 2px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.hod-accept {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.hod-reject {
+    background-color: #f44336;
+    color: white;
+}
+
+.hod-button:hover {
+    opacity: 0.8;
+}
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            .print-btn {
+        background-color: #6c757d;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .print-btn:hover {
+        background-color: #5a6268;
+    }
+    
+    
+        }
+    </style>
+     <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+
+    <header th:insert="~{fragments/approverheader.html :: header}"></header>
+  
+    <h1>Unverified Records</h1>
+    <button onclick="exportToExcel()">Export to Excel</button>
+    <!-- <button onclick="exportToPDF()">Export to PDF</button><br> -->
+
+    <div style="margin: 15px 0;">
+    <label for="form-select">Select Form to Export as PDF:</label>
+    <select id="form-select" style="padding: 5px; margin: 0 10px;">
+        <option value="all">All Forms</option>
+        <option value="table-1">Form 1 - Gift Report</option>
+        <option value="table-2">Form 2 - Other Department CTE</option>
+        <option value="table-3">Form 3 - Civil Department CTE</option>
+        <option value="table-4">Form 4 - Foreign Visit</option>
+        <option value="table-51">Form 5.1 - Suspension</option>
+        <option value="table-52">Form 5.2 - Major/Minor Penalty</option>
+        <option value="table-5A">Form 5A - Suspension Details</option>
+        <option value="table-5B">Form 5B - Penalty Proceedings</option>
+        <option value="table-5C">Form 5C - Pending Penalty Proceedings</option>
+        <option value="table-6">Form 6 - Ongoing/Concluded Works</option>
+    </select>
+    <button onclick="exportSelectedToPDF()" class="export-btn pdf-export-btn">
+        <i class="fas fa-file-pdf"></i> Export Selected as PDF
+    </button>
+</div>
+
+
+    
+
+
+
+     <!-- Buttons for each table -->
+     <!-- <button onclick="showTable('table-1')">Gift Report Form 1</button>
+     <button onclick="showTable('table-2')">Other department CTE Form 2</button>
+     <button onclick="showTable('table-3')">Civil other department CTE Form 3</button>
+     <button onclick="showTable('table-4')">Foreign Visit Form 4</button>
+     <button onclick="showTable('table-51')">Suspension Form 5.1</button>
+     <button onclick="showTable('table-52')">major/minor penalty Form 5.2</button>
+     <button onclick="showTable('table-5A')">Suspension details Form 5A</button>
+     <button onclick="showTable('table-5B')">major/minor Penalty Proceedings Form 5B</button>
+     <button onclick="showTable('table-5C')">major/minor Penalty Proceedings pendingForm 5C</button>
+     <button onclick="showTable('table-6')">Ongoing/Concluded works Form 6</button> -->
+     
+
+
+    <!-- Buttons for each table -->
+
+    <button class="tab-button" onclick="showTable('table-1')">Form 1<br>Gift Report</button>
+    <button class="tab-button" onclick="showTable('table-2')">Form 2<br>Other department CTE</button>
+    <button class="tab-button" onclick="showTable('table-3')">Form 3<br>Civil other department CTE</button>
+    <button class="tab-button" onclick="showTable('table-4')">Form 4<br>Foreign Visit</button>
+    <button class="tab-button" onclick="showTable('table-51')">Form 5.1<br>Suspension</button>
+    <button class="tab-button" onclick="showTable('table-52')">Form 5.2<br>Major/Minor Penalty</button>
+    <button class="tab-button" onclick="showTable('table-5A')">Form 5A<br>Suspension Details</button>
+    <button class="tab-button" onclick="showTable('table-5B')">Form 5B<br>Major/Minor Penalty Proceedings</button>
+    <button class="tab-button" onclick="showTable('table-5C')">Form 5C<br>Pending Penalty Proceedings</button>
+    <button class="tab-button" onclick="showTable('table-6')">Form 6<br>Ongoing/Concluded Works</button>
+
+
+
+
+
+
+     <!-- View All Button -->
+     <button onclick="showAllTables()">View All</button>
+
+
+
+    <div id="table-1" class="table-container">
+        <h2>Form-1 Expenditure on Gifts</h2>
+        <table id="Expenditure">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    
+                    <th>Name & Designation of the Government Official</th>
+                    <th>Date on which gift has been given</th>
+                    <th>Expenditure incurred by JNPT (Rs.)</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                <th>HOD Action</th>
+                        
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="expenditure : ${approverData.expenditures}" th:if="${expenditure.verificationstatus == 'Pending'}">
+                    <td th:text="${expenditure.id}"></td>
+                    <td th:text="${expenditure.staffno}"></td>
+                    <td th:text="${expenditure.createdBy}"></td>
+                    
+                    <td th:text="${expenditure.officialName}"></td>
+                    <td th:text="${expenditure.dateofgiftgiven}"></td>
+                    <td th:text="${expenditure.expenditure}"></td>
+                    
+                    <td th:text="${expenditure.createdAt}"></td>
+                    <td th:text="${expenditure.Verified}"></td>
+
+                    <td th:text="${expenditure.verificationstatus}"></td>
+                      <td>
+                    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+                        <input type="hidden" name="id" th:value="${expenditure.id}"/>
+                        <input type="hidden" name="entityType" value="expenditure"/>
+                        <button type="submit" class="hod-button hod-accept">Accept</button>
+                    </form>
+                    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+                        <input type="hidden" name="id" th:value="${expenditure.id}"/>
+                        <input type="hidden" name="entityType" value="expenditure"/>
+                        <button type="submit" class="hod-button hod-reject">Reject</button>
+                    </form>
+                </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-2" class="table-container">
+        <h2>Form-2 Statement showing quarterly Progress of Original Work</h2>
+        <table id="ProgressOfWork">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Item / Nature of Work</th>
+                    <th>Estimated Cost (Rs.)</th>
+                    <th>Tendered Cost (Rs.)</th>
+                    <th>% Above/Below Schedule Rates</th>
+                    <th>Agreement No.</th>
+                    <th>Date of Commencement</th>
+                    <th>Time of Completion</th>
+                    <th>Physical Progress (%)</th>
+                    <th>Name of Engineer In-Charge</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="progress : ${approverData.progressOfWorks}" th:if="${progress.verificationstatus == 'Pending'}">
+                    <td th:text="${progress.id}"></td>
+                    <td th:text="${progress.staffno}"></td>
+                    <td th:text="${progress.createdBy}"></td>
+                    <td th:text="${progress.itemName}"></td>
+                    <td th:text="${progress.estimatedCost}"></td>
+                    <td th:text="${progress.tenderedCost}"></td>
+                    <td th:text="${progress.ratePercentage}"></td>
+                    <td th:text="${progress.agreementNo}"></td>
+                    <td th:text="${progress.commencementDate}"></td>
+                    <td th:text="${progress.completionTime}"></td>
+                    <td th:text="${progress.physicalProgress}"></td>
+                    <td th:text="${progress.engineerName}"></td>
+                    <td th:text="${progress.remarks}"></td>
+                    <td th:text="${progress.createdAt}"></td>
+                    <td th:text="${progress.Verified}"></td>
+                    <td th:text="${progress.verificationstatus}"></td>
+                     <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${progress.id}"/>
+        <input type="hidden" name="entityType" value="progress"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${progress.id}"/>
+        <input type="hidden" name="entityType" value="progress"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-3" class="table-container">
+        <h2>Form-3 Statement showing quarterly Progress of Original Work (Civil)</h2>
+        <table id="ProgressOfWorkCivil">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Name of Works</th>
+                    <th>Estimated Cost (Rs. in Lakhs)</th>
+                    <th>Tendered Cost (Rs. in Lakhs)</th>
+                    <th>% Above/Below Schedule Rates</th>
+                    <th>Agreement No.</th>
+                    <th>Agency</th>
+                    <th>Date of Commencement</th>
+                    <th>Time of Completion</th>
+                    <th>Physical Progress (%)</th>
+                    <th>Name of Engineer In-Charge</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="civil : ${approverData.progressOfWorkCivils}" th:if="${civil.verificationstatus == 'Pending'}">
+                    <td th:text="${civil.id}"></td>
+                    <td th:text="${civil.staffno}"></td>
+                    <td th:text="${civil.createdBy}"></td>
+                    <td th:text="${civil.descriptionOfWork}"></td>
+                    <td th:text="${civil.estimatedCost}"></td>
+                    <td th:text="${civil.tenderedCost}"></td>
+                    <td th:text="${civil.ratePercentage}"></td>
+                    <td th:text="${civil.agreementNo}"></td>
+                    <td th:text="${civil.agency}"></td>
+                    <td th:text="${civil.commencementDate}"></td>
+                    <td th:text="${civil.completionTime}"></td>
+                    <td th:text="${civil.physicalProgress}"></td>
+                    <td th:text="${civil.engineerInCharge}"></td>
+                    <td th:text="${civil.remarks}"></td>
+                    <td th:text="${civil.createdAt}"></td>
+                    <td th:text="${civil.Verified}"></td>
+                    <td th:text="${civil.verificationstatus}"></td>
+                     <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${civil.id}"/>
+        <input type="hidden" name="entityType" value="civil"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${civil.id}"/>
+        <input type="hidden" name="entityType" value="civil"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-4" class="table-container">
+        <h2>Form-4 Foreign Visit by the JNPA employees</h2>
+        <table id="ForeignVisits">
+            <thead>
+                <tr>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Name & Designation of the Officer/Staff</th>
+                    <th>Name of Country Visited</th>
+                    <th>Duration of Stay</th>
+                    <th>Source of Funding</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="visit : ${approverData.foreignVisits}" th:if="${visit.verificationstatus == 'Pending'}">
+                    <td th:text="${visit.staffno}"></td>
+                    <td th:text="${visit.createdBy}"></td>
+                    <td th:text="${visit.nameDesignation}"></td>
+                    <td th:text="${visit.countryVisited}"></td>
+                    <td th:text="${visit.durationOfStay}"></td>
+                    <td th:text="${visit.sourceOfFunding}"></td>
+                    <td th:text="${visit.remarks}"></td>
+                    <td th:text="${visit.createdAt}"></td>
+                    <td th:text="${visit.Verified}"></td>
+                    <td th:text="${visit.verificationstatus}"></td>
+                    <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${visit.id}"/>
+        <input type="hidden" name="entityType" value="visit"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${visit.id}"/>
+        <input type="hidden" name="entityType" value="visit"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-51" class="table-container">
+        <h2>Form-5.1 Suspension Cases</h2>
+        <table id="SuspensionReport">
+            <thead>
+                <tr>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Suspended Persons at Start of Month</th>
+                    <th>Suspended Persons during Month</th>
+                    <th>Suspension Revoked</th>
+                    <th>Persons Suspended (1-3 Months)</th>
+                    <th>Persons Suspended (3-6 Months)</th>
+                    <th>Persons Suspended (Over 6 Months)</th>
+                    <th>Total Persons under Suspension at End of Month</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="report : ${approverData.suspensionReport}" th:if="${report.verificationstatus == 'Pending'}">
+                    <td th:text="${report.staffno}"></td>
+                    <td th:text="${report.createdBy}"></td>
+                    <td th:text="${report.personsUnderSuspensionStart}"></td>
+                    <td th:text="${report.personsSuspended}"></td>
+                    <td th:text="${report.suspensionRevoked}"></td>
+                    <td th :text="${report.personsSuspended1to3Months}"></td>
+                    <td th:text="${report.personsSuspended3to6Months}"></td>
+                    <td th:text="${report.personsSuspendedOver6Months}"></td>
+                    <td th:text="${report.totalPersonsUnderSuspensionEnd}"></td>
+                    <td th:text="${report.createdAt}"></td>
+                    <td th:text="${report.Verified}"></td>
+                    <td th:text="${report.verificationstatus}"></td>
+                    <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${report.id}"/>
+        <input type="hidden" name="entityType" value="report"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${report.id}"/>
+        <input type="hidden" name="entityType" value="report"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-52" class="table-container">
+        <h2>Form-5.2 Major / Minor Penalty Cases</h2>
+        <table id="PenaltyCase">
+            <thead>
+                <tr>
+                    <th rowspan="2">Staff No</th>
+                    <th rowspan="2">Created By</th>
+                    <th colspan="2">No. of cases pending in the beginning of the month</th>
+                    <th colspan="2">No. of fresh cases initiated during the month</th>
+                    <th colspan="2">No. of cases finalized during the month</th>
+                    <th colspan="2">Total no. of cases pending at the end of the month</th>
+                    <th rowspan="2">Created at</th>
+                    <th rowspan="2">Verified</th>
+                    <th rowspan="2">Verification Status</th>
+                    <th rowspan="2">HOD Action</th> 
+                </tr>
+                <tr>
+                    <th>Major</th>
+                    <th>Minor</th>
+                    <th>Major</th>
+                    <th>Minor</th>
+                    <th>Major</th>
+                    <th>Minor</th>
+                    <th>Major</th>
+                    <th>Minor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="case : ${approverData.penaltyCase}" th:if="${case.verificationstatus == 'Pending'}">
+                    <td th:text="${case.staffno}"></td>
+                    <td th:text="${case.createdBy}"></td>
+                    <td th:text="${case.majorPendingStart}"></td>
+                    <td th:text="${case.minorPendingStart}"></td>
+                    <td th:text="${case.majorInitiated}"></td>
+                    <td th:text="${case.minorInitiated}"></td>
+                    <td th:text="${case.majorFinalized}"></td>
+                    <td th:text="${case.minorFinalized}"></td>
+                    <td th:text="${case.majorPendingEnd}"></td>
+                    <td th:text="${case.minorPendingEnd}"></td>
+                    <td th:text="${case.createdAt}"></td>
+                    <td th:text="${case.Verified}"></td>
+                    <td th:text="${case.verificationstatus}"></td>
+                    <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${case.id}"/>
+        <input type="hidden" name="entityType" value="case"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${case.id}"/>
+        <input type="hidden" name="entityType" value="case"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-5A" class="table-container">
+        <h2>Form5A Statement showing details of official suspension</h2>
+        <table id="Form5A" border="1">
+            <thead>
+                <tr>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Name & Designation of the suspended officer</th>
+                    <th>Date of suspension</th>
+                    <th>Reason for suspension</th>
+                    <th>Whether in 3 months cases reviewed</th>
+                    <th>Present status of the case</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="form5A : ${approverData.form5As}" th:if="${form5A.verificationstatus == 'Pending'}">
+                    <td th:text="${form5A.staffno}"></td>
+                    <td th:text="${form5A.createdBy}"></td>
+                    <td th:text="${form5A.officerName}"></td>
+                    <td th:text="${form5A.suspensionDate}"></td>
+                    <td th:text="${form5A.reasonForSuspension}"></td>
+                    <td th:text="${form5A.casesReviewed}"></td>
+                    <td th:text="${form5A.currentStatus}"></td>
+                    <td th:text="${form5A.remarks}"></td>
+                    <td th:text="${form5A.createdAt}"></td>
+                    <td th:text="${form5A.Verified}"></td>
+                    <td th:text="${form5A.verificationstatus}"></td>
+                     <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${form5A.id}"/>
+        <input type="hidden" name="entityType" value="form5A"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${form5A.id}"/>
+        <input type="hidden" name="entityType" value="form5A"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-5B" class="table-container">
+        <h2>Form5B Statement showing details of Major / Minor penalty Proceedings pending</h2>
+        <table id="Form5B" border="1">
+            <thead>
+                <tr>
+ <th>Staff No</th>
+                    <th>Created by</th>
+                    <th>Name & Designation of the Charged Officer</th>
+                    <th>Date of issue of Charge Sheet</th>
+                    <th>Date of appointment of Inquiring Officer</th>
+                    <th>Brief history of the case</th>
+                    <th>Present position of the case</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="form5B : ${approverData.form5Bs}" th:if="${form5B.verificationstatus == 'Pending'}">
+                    <td th:text="${form5B.staffno}"></td>
+                    <td th:text="${form5B.createdBy}"></td>
+                    <td th:text="${form5B.officerName}"></td>
+                    <td th:text="${form5B.chargeSheetDate}"></td>
+                    <td th:text="${form5B.inquiryOfficerAppointedDate}"></td>
+                    <td th:text="${form5B.caseBrief}"></td>
+                    <td th:text="${form5B.currentStatus}"></td>
+                    <td th:text="${form5B.remarks}"></td>
+                    <td th:text="${form5B.createdAt}"></td>
+                    <td th:text="${form5B.Verified}"></td>
+                    <td th:text="${form5B.verificationstatus}"></td>
+                    <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${form5B.id}"/>
+        <input type="hidden" name="entityType" value="form5B"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${form5B.id}"/>
+        <input type="hidden" name="entityType" value="form5B"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-5C" class="table-container">
+        <h2>Form5C Statement showing details of Major / Minor penalty Proceedings pending</h2>
+        <table id="Form5C" border="1">
+            <thead>
+                <tr>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Name & Designation of the Charged Officer</th>
+                    <th>Date of issue of Charge Sheet</th>
+                    <th>Date of appointment of Inquiring Officer</th>
+                    <th>Brief history of the case</th>
+                    <th>Present position of the case</th>
+                    <th>Remarks</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="form5C : ${approverData.form5Cs}" th:if="${form5C.verificationstatus == 'Pending'}">
+                    <td th:text="${form5C.staffno}"></td>
+                    <td th:text="${form5C.createdBy}"></td>
+                    <td th:text="${form5C.officerName}"></td>
+                    <td th:text="${form5C.chargeSheetDate}"></td>
+                    <td th:text="${form5C.inquiryOfficerAppointedDate}"></td>
+                    <td th:text="${form5C.caseBrief}"></td>
+                    <td th:text="${form5C.currentStatus}"></td>
+                    <td th:text="${form5C.remarks}"></td>
+                    <td th:text="${form5C.createdAt}"></td>
+                    <td th:text="${form5C.Verified}"></td>
+                    <td th:text="${form5C.verificationstatus}"></td>
+                    <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${form5C.id}"/>
+        <input type="hidden" name="entityType" value="form5C"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${form5C.id}"/>
+        <input type="hidden" name="entityType" value="form5C"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="table-6" class="table-container">
+        <h2>Form-6 Ongoing / Concluded works</h2>
+        <table id="Contract" border="1">
+            <thead>
+                <tr>
+                    <th>Staff No</th>
+                    <th>Created By</th>
+                    <th>Tender No.</th>
+                    <th>Item/Nature of work</th>
+                    <th>Mode of Tender Enquiry</th>
+                    <th>Date of publication of NIT</th>
+                    <th>Type of Bidding (Single/Two bid system)</th>
+                    <th>Last date of receipt of Tender</th>
+                    <th>Nos. Tender received</th>
+                    <th>Nos. & Names of parties qualified</th>
+                    <th>Nos. & Names of parties not qualified</th>
+                    <th>Whether contract awarded to L1</th>
+                    <th>Contract No. & Date</th>
+                    <th>Name of the Contractor</th>
+                    <th>Value of Contract (in Rs.)</th>
+                    <th>Actual date of start of work</th>
+                    <th>Schedule date of completion</th>
+                    <th>Actual date of completion</th>
+                    <th>Reason for delay if any</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <th>Verification Status</th>
+                    <th>HOD Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="contract : ${approverData.contracts }" th:if="${contract.verificationstatus == 'Pending'}">
+                    <td th:text="${contract.staffno}"></td>
+                    <td th:text="${contract.createdBy}"></td>
+                    <td th:text="${contract.tenderNo}"></td>
+                    <td th:text="${contract.natureOfWork}"></td>
+                    <td th:text="${contract.tenderEnquiry}"></td>
+                    <td th:text="${contract.nitDate}"></td>
+                    <td th:text="${contract.biddingType}"></td>
+                    <td th:text="${contract.receiptDate}"></td>
+                    <td th:text="${contract.tenderReceived}"></td>
+                    <td th:text="${contract.qualifiedParties}"></td>
+                    <td th:text="${contract.notQualifiedParties}"></td>
+                    <td th:text="${contract.contractL1}"></td>
+                    <td th:text="${contract.contractNo}"></td>
+                    <td th:text="${contract.contractorName}"></td>
+                    <td th:text="${contract.contractValue}"></td>
+                    <td th:text="${contract.startDate}"></td>
+                    <td th:text="${contract.completionDate}"></td>
+                    <td th:text="${contract.actualCompletionDate}"></td>
+                    <td th:text="${contract.delayReason}"></td>
+                    <td th:text="${contract.createdAt}"></td>
+                    <td th:text="${contract.Verified}"></td>
+                    <td th:text="${contract.verificationstatus}"></td>
+                    <td>
+    <form th:action="@{/approver/hodapprove}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${contract.id}"/>
+        <input type="hidden" name="entityType" value="contract"/>
+        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+    </form>
+    <form th:action="@{/approver/hodreject}" method="post" style="display: inline;">
+        <input type="hidden" name="id" th:value="${contract.id}"/>
+        <input type="hidden" name="entityType" value="contract"/>
+        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+    </form>
+</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+<!-- Rejection Reason Modal -->
+<div id="rejectionModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Reason for Rejection</h3>
+        <form id="rejectionForm" method="post" th:action="@{/approver/hodreject}">
+            <input type="hidden" id="rejectId" name="id"/>
+            <input type="hidden" id="rejectEntityType" name="entityType"/>
+            <textarea id="rejectionReason" name="rejectionReason" rows="5" cols="50" required></textarea>
+            <button type="submit" class="admin-button">Submit Rejection</button>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    border-radius: 5px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        
+        // Check and set "Not Filled" if the content in <td> is empty
+        document.querySelectorAll('td').forEach(function(cell) {
+            if (!cell.textContent.trim()) {
+                cell.textContent = 'Not Filled';
+            }
+        });
+
+
+
+   function exportToExcel() {
+    try {
+        // Create a workbook object
+        var wb = XLSX.utils.book_new();
+
+        // Get all tables in the document
+        var tables = document.querySelectorAll(".table-container table");
+
+        // Loop through each table and extract data into separate sheets
+        tables.forEach(function (table, index) {
+            // Get the table name from the h2 heading above each table
+            var tableName = table.closest('.table-container').querySelector('h2').innerText.trim();
+            
+            // Sanitize the sheet name by removing invalid characters
+            tableName = tableName.replace(/[:\\\/?*[\]]/g, '');
+            
+            // Truncate to 31 characters (Excel limit) and ensure it's not empty
+            tableName = tableName.substring(0, 31) || `Table_${index + 1}`;
+
+            // Initialize an array to store rows for the current sheet
+            var tableData = [];
+
+            // Process headers
+            var headers = [];
+            table.querySelectorAll("thead th").forEach(function(th) {
+                // Handle colspan by repeating the header text
+                var colspan = th.colSpan || 1;
+                for (var i = 0; i < colspan; i++) {
+                    headers.push(th.innerText.trim());
+                }
+            });
+            tableData.push(headers);
+
+            // Process data rows
+            table.querySelectorAll("tbody tr").forEach(function (row) {
+                var rowData = [];
+                row.querySelectorAll("td").forEach(function (cell) {
+                    // Skip action buttons column
+                    if (!cell.querySelector('.hod-button')) {
+                        var text = cell.innerText.trim();
+                        rowData.push(text === '' ? 'Not Filled' : text);
+                    }
+                });
+                if (rowData.length > 0) {
+                    tableData.push(rowData);
+                }
+            });
+
+            // Convert the rows into a worksheet
+            var sheet = XLSX.utils.aoa_to_sheet(tableData);
+
+            // Auto-size columns
+            sheet['!cols'] = headers.map(() => ({wch: 20}));
+
+            // Add the worksheet to the workbook with the table name
+            XLSX.utils.book_append_sheet(wb, sheet, tableName);
+        });
+
+        // Export the workbook to a file
+        XLSX.writeFile(wb, "forms_data.xlsx");
+    } catch (error) {
+        console.error("Error exporting to Excel:", error);
+        alert("Error exporting to Excel. Please check console for details.");
+    }
+}
+
+
+
+
+
+
+
+////////////////////////////////////////select prints
+
+ 
+
+
+function exportSelectedToPDF() {
+        const formSelect = document.getElementById('form-select');
+        const selectedFormId = formSelect.value;
+        
+        if (selectedFormId === 'all') {
+            exportToPDF(); // Use your existing function for all forms
+            return;
+        }
+        
+        const selectedTable = document.getElementById(selectedFormId);
+        if (selectedTable) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm'
+            });
+
+            // Get table title
+            const tableTitle = selectedTable.closest('.table-container').querySelector('h2').innerText.trim();
+
+            // Prepare data for autoTable
+            const headers = [];
+            const data = [];
+
+            // Process headers
+            selectedTable.querySelectorAll("thead th").forEach(function(th) {
+                // Handle colspan by repeating the header text
+                var colspan = th.colSpan || 1;
+                for (var i = 0; i < colspan; i++) {
+                    headers.push(th.innerText.trim());
+                }
+            });
+
+            // Process data rows
+            selectedTable.querySelectorAll("tbody tr").forEach(function (row) {
+                const rowData = [];
+                row.querySelectorAll("td").forEach(function (cell) {
+                    // Skip action buttons column
+                    if (!cell.querySelector('.hod-button')) {
+                        var text = cell.innerText.trim();
+                        rowData.push(text === '' ? 'Not Filled' : text);
+                    }
+                });
+                if (rowData.length > 0) {
+                    data.push(rowData);
+                }
+            });
+
+            // Add title
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(tableTitle, doc.internal.pageSize.getWidth() / 2, 15, { align: "center" });
+
+            // Add table
+            doc.autoTable({
+                head: [headers],
+                body: data,
+                startY: 25,
+                margin: { left: 10, right: 10 },
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                    overflow: 'linebreak',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [26, 92, 167],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 'auto' },
+                    1: { cellWidth: 'auto' },
+                },
+                didDrawPage: function(data) {
+                    // Footer with page number
+                    doc.setFontSize(8);
+                    doc.setTextColor(100);
+                    doc.text(
+                        'Page ' + doc.internal.getNumberOfPages(),
+                        doc.internal.pageSize.getWidth() - 20,
+                        doc.internal.pageSize.getHeight() - 10
+                    );
+                }
+            });
+
+            // Save the PDF with form-specific name
+            doc.save(`form_${selectedFormId}.pdf`);
+        } else {
+            alert('Form not found!');
+        }
+    }
+
+    // Modified exportToPDF to handle multiple pages better
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm'
+        });
+
+        let pageCount = 1;
+
+        // Get all tables
+        const tables = document.querySelectorAll(".table-container table");
+
+        tables.forEach(function (table, index) {
+            // Start new page for each form (except the first one)
+            if (index > 0) {
+                doc.addPage();
+                pageCount++;
+            }
+
+            // Reset Y position for each new page
+            let yPosition = 15;
+
+            // Get table title
+            const tableTitle = table.closest('.table-container').querySelector('h2').innerText.trim();
+
+            // Prepare data for autoTable
+            const headers = [];
+            const data = [];
+
+            // Process headers
+            table.querySelectorAll("thead th").forEach(function(th) {
+                // Handle colspan by repeating the header text
+                var colspan = th.colSpan || 1;
+                for (var i = 0; i < colspan; i++) {
+                    headers.push(th.innerText.trim());
+                }
+            });
+
+            // Process data rows
+            table.querySelectorAll("tbody tr").forEach(function (row) {
+                const rowData = [];
+                row.querySelectorAll("td").forEach(function (cell) {
+                    // Skip action buttons column
+                    if (!cell.querySelector('.hod-button')) {
+                        var text = cell.innerText.trim();
+                        rowData.push(text === '' ? 'Not Filled' : text);
+                    }
+                });
+                if (rowData.length > 0) {
+                    data.push(rowData);
+                }
+            });
+
+            // Add title
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(tableTitle, doc.internal.pageSize.getWidth() / 2, yPosition, { align: "center" });
+            yPosition += 10;
+
+            // Add table
+            doc.autoTable({
+                head: [headers],
+                body: data,
+                startY: yPosition,
+                margin: { left: 10, right: 10 },
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                    overflow: 'linebreak',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [26, 92, 167],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 'auto' },
+                    1: { cellWidth: 'auto' },
+                },
+                didDrawPage: function(data) {
+                    // Footer with page number
+                    doc.setFontSize(8);
+                    doc.setTextColor(100);
+                    doc.text(
+                        'Page ' + doc.internal.getNumberOfPages(),
+                        doc.internal.pageSize.getWidth() - 20,
+                        doc.internal.pageSize.getHeight() - 10
+                    );
+                }
+            });
+        });
+
+        // Save the PDF
+        doc.save("all_forms_data.pdf");
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+        window.onload = function() {
+            // Get all tables on the page
+            var tables = document.querySelectorAll("table");
+
+            // Iterate over each table to check if it has data
+            tables.forEach(function(table) {
+                var rows = table.getElementsByTagName("tr");
+
+                // If the table has no data rows (excluding header)
+                if (rows.length <= 1) {
+                    var messageRow = document.createElement("tr");
+                    var messageCell = document.createElement("td");
+
+                    // Set up the message in the row and cell
+                    messageCell.colSpan = table.rows[0].cells.length; // Span across all columns of the table
+                    messageCell.textContent = "The form was not filled.";
+                    messageCell.style.textAlign = "center";
+                    messageCell.style.fontStyle = "italic";
+                    messageCell.style.color = "red"; // Set text color to red
+                    messageCell.style.fontWeight = "bold"; // Make the text bold
+                    messageRow.appendChild(messageCell);
+                    table.appendChild(messageRow);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+        // Function to show a specific table based on the tableId
+        function showTable(tableId) {
+            // Hide all tables
+            let tables = document.querySelectorAll('.table-container');
+            tables.forEach(table => table.style.display = 'none');
+
+            // Remove active button class from all buttons
+            let buttons = document.querySelectorAll('button');
+            buttons.forEach(button => button.classList.remove('active-btn'));
+
+            // Show the selected table
+            document.getElementById(tableId).style.display = 'block';
+
+            // Add active button class to the clicked button
+            let activeButton = document.querySelector(`button[onclick="showTable('${tableId}')"]`);
+            activeButton.classList.add('active-btn');
+        }
+
+        // Function to display all tables
+        function showAllTables() {
+            // Show all tables
+            let tables = document.querySelectorAll('.table-container');
+            tables.forEach(table => table.style.display = 'block');
+
+            // Remove active button class from all buttons
+            let buttons = document.querySelectorAll('button');
+            buttons.forEach(button => button.classList.remove('active-btn'));
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Rejection Modal Handling
+var modal = document.getElementById("rejectionModal");
+var span = document.getElementsByClassName("close")[0];
+
+// Close modal when clicking X or outside
+span.onclick = function() { modal.style.display = "none"; }
+window.onclick = function(event) { if (event.target == modal) modal.style.display = "none"; }
+
+// Handle reject button clicks
+function handleRejectClick(event, form) {
+    event.preventDefault();
+    document.getElementById("rejectId").value = form.querySelector('input[name="id"]').value;
+    document.getElementById("rejectEntityType").value = form.querySelector('input[name="entityType"]').value;
+    modal.style.display = "block";
+}
+
+// Attach event listeners to all reject forms
+document.querySelectorAll('form[action*="/approver/hodreject"]').forEach(form => {
+    form.addEventListener('submit', function(e) { handleRejectClick(e, this); });
+});
+
+// Handle modal form submission
+document.getElementById("rejectionForm").addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this)
+    }).then(response => {
+        if (response.ok) window.location.reload();
+        else alert('Error submitting rejection');
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting rejection');
+    });
+});
+
+       
+    </script>
+</body>
+</html>
+
+
+

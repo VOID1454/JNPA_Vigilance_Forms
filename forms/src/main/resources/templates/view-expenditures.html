@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Form-1</title>
+    <link rel="stylesheet" type="text/css" href="/css/view.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+     
+     <style>
+        h2 {
+            text-align: center; /* Center the text */
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+    <script src="/js/export.js"></script>
+   
+    <h1>Form- 1</h1>
+    <h2>Expenditure on Gifts</h2>
+    <h2>सरकारी कर्मचारियों द्वारा उपहार स्वीकार करने संबंध में</h2>
+        <button onclick="exportToExcel()">Export to Excel</button>
+    
+        <table id="expenditureTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Staff No</th>
+                    <th>Username</th>
+                    <th>Year</th>
+                    <th>Quarter</th>
+                    <th>Department</th>
+                    <th>Name & Designation of the Government Official</th>
+                    <th>Date on which gift has been given</th>
+                    <th>Expenditure incurred by JNPA (Rs.)</th>
+                    <th>Created At</th>
+                    <th>Verified</th>
+                    <!-- <th>Action</th> -->
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="expenditure : ${expenditures}">
+                    <td th:text="${expenditure.id}"></td>
+                    <td th:text="${expenditure.staffno}"></td>
+                    <td th:text="${expenditure.createdBy}"></td>
+                    <td th:text="${expenditure.foryear}"></td>
+                    <td th:text="${expenditure.forquarter}"></td>
+                    <td th:text="${expenditure.fordepartment}"></td>
+                    <td th:text="${expenditure.officialName}"></td>
+                    <td th:text="${expenditure.dateofgiftgiven}"></td>
+                    <td th:text="${expenditure.expenditure}"></td>
+                    <td th:text="${expenditure.createdAt}"></td>
+                    <td th:text="${expenditure.verified}"></td>
+                        
+                    <!-- <td>
+                    <button onclick="copyToForm(this)">Copy</button>
+                    </td> -->
+
+                </tr>
+            </tbody>
+        </table>
+    
+
+         
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables without pagination
+            $('#expenditureTable').DataTable({
+                paging: true,      // Disable pagination
+                searching: true,    // Enable search functionality
+                ordering: true,     // Enable sorting
+                language: {
+                    search: "Search: " 
+                }
+            });
+        });
+
+        function exportToExcel() {
+    var table = document.getElementById("expenditureTable");
+    var wb = XLSX.utils.table_to_book(table, { sheet: "expenditureTable" });
+    XLSX.writeFile(wb, "expenditureTable.xlsx");
+} 
+
+function copyToForm(button) {
+    const row = button.closest('tr');         
+    const quarter = row.cells[4].innerText;         
+    const year = row.cells[3].innerText; 
+    const officialName = row.cells[6].innerText;    
+    const dateGiven = row.cells[7].innerText;    
+    const expenditure = row.cells[8].innerText;      
+                                    
+
+    
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/user/copy-to-form';
+    
+
+    const fields = [
+        { name: 'quarter', value: quarter },
+        { name: 'year', value: year },
+        { name: 'officialName', value: officialName },
+        { name: 'dateGiven', value: dateGiven },
+        { name: 'expenditure', value: expenditure }
+    ];
+
+    fields.forEach(field => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = field.name;
+        input.value = field.value;
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();  
+}
+
+    </script>
+</body>
+
+</html>

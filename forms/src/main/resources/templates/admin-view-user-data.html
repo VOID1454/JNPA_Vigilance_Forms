@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Admin - User Data</title>
+    <link rel="stylesheet" type="text/css" href="/css/admin.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <header th:insert="~{fragments/admin-header.html :: header}"></header>
+    <h1>Data for User: <span th:text="${staffno}"></span></h1>
+    
+    <h2>Expenditures</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Official Name</th>
+                <th>Date Given</th>
+                <th>Expenditure (Rs.)</th>
+                <th>Created By</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="expenditure : ${expenditures}">
+                <td th:text="${expenditure.year}"></td>
+                <td th:text="${expenditure.officialName}"></td>
+                <td th:text="${expenditure.dateGiven}"></td>
+                <td th:text="${expenditure.expenditure}"></td>
+                <td th:text="${expenditure.createdBy}"></td>
+                <td th:text="${expenditure.createdAt}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Progress of Work</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Work Description</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="progress : ${progressOfWorks}">
+                <td th:text="${progress.description}"></td>
+                <td th:text="${progress.startDate}"></td>
+                <td th:text="${progress.endDate}"></td>
+                <td th:text="${progress.status}"></td>
+                <td th:text="${progress.createdBy}"></td>
+                <td th:text="${progress.createdAt}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

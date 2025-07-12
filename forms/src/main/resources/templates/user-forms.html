@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users and Forms Status</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .red {
+            background-color: red;
+            color: white;
+        }
+
+        .green {
+            background-color: green;
+            color: white;
+        }
+
+        h1 {
+            margin-top: 80px;
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <header th:insert="~{fragments/adminheader.html :: header}"></header>
+
+    <h1>Users and Forms Submission Status</h1>
+
+    <table id="statusTable">
+        <thead>
+            <tr>
+                <th>Staff Number</th>
+                <th>Username</th>
+                <th>Form-1</th>
+                <th>Form-2</th>
+                <th>Form-3</th>
+                <th>Form-4</th>
+                <th>Form-5</th>
+                <th>Form-5.1</th>
+                <th>Form-5A</th>
+                <th>Form-5B</th>
+                <th>Form-5C</th>
+                <th>Form-6</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${userDetails}">
+                <td th:text="${user.staffno}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:class="${user['form-1'] == 'green' ? 'green' : 'red'}" th:text="${user['form-1'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-2'] == 'green' ? 'green' : 'red'}" th:text="${user['form-2'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-3'] == 'green' ? 'green' : 'red'}" th:text="${user['form-3'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-4'] == 'green' ? 'green' : 'red'}" th:text="${user['form-4'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-5'] == 'green' ? 'green' : 'red'}" th:text="${user['form-5'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-5.1'] == 'green' ? 'green' : 'red'}" th:text="${user['form-5.1'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-5A'] == 'green' ? 'green' : 'red'}" th:text="${user['form-5A'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-5B'] == 'green' ? 'green' : 'red'}" th:text="${user['form-5B'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-5C'] == 'green' ? 'green' : 'red'}" th:text="${user['form-5C'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+                <td th:class="${user['form-6'] == 'green' ? 'green' : 'red'}" th:text="${user['form-6'] == 'green' ? 'Filled' : 'Not Filled'}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables without pagination
+            $('#statusTable').DataTable({
+                paging: true,      // Disable pagination
+                searching: true,    // Enable search functionality
+                ordering: true,     // Enable sorting
+                language: {
+                    search: "Search: " // Customize search bar label
+                }
+            });
+        });
+    </script>
+</body>
+</html>

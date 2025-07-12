@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Upload Users</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Dynamic background container */
+        .gradient-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #ff0000, #0000ff);
+            transition: background 0.2s ease;
+        }
+
+        .upload-container {
+            background: white;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 400px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input[type="file"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .message p {
+            margin: 0;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            padding: 10px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+    <script type="text/javascript">
+        // Disable back button by manipulating browser history
+        function disableBack() { window.history.forward(); }
+        setTimeout("disableBack()", 0);
+        window.onunload = function () { null };
+    </script>
+</head>
+<body>
+    <!-- Background gradient container -->
+    <div class="gradient-background"></div>
+    <div id="toast"></div>
+    <div class="upload-container">
+        <h1>Upload Users from CSV</h1>
+        <form action="/uploadUsers" method="post" enctype="multipart/form-data">
+            <label for="file">Select CSV File</label>
+            <input type="file" id="file" name="file" accept=".csv" required>
+            <button type="submit">Upload</button>
+        </form>
+        <div class="message">
+            <p th:if="${message}" class="alert alert-success" th:text="${message}"></p>
+            <p th:if="${error}" class="alert alert-danger" th:text="${error}"></p>
+        </div>
+    </div>
+
+    <script>
+        // Mouse movement gradient effect
+        document.addEventListener("mousemove", (event) => {
+            const { clientX: x, clientY: y } = event;
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            // Calculate gradient direction and colors
+            const xPercent = Math.round((x / width) * 100);
+            const yPercent = Math.round((y / height) * 100);
+            const gradient = `linear-gradient(${xPercent}deg, rgb(${xPercent}, ${yPercent}, 200), rgb(${200 - xPercent}, ${255 - yPercent}, 100))`;
+
+            const background = document.querySelector(".gradient-background");
+            background.style.background = gradient;
+        });
+
+        // Get the toast message from the backend
+        const toastMessage = "[[${toastMessage}]]";
+        if (toastMessage && toastMessage !== "null") {
+            let toast = document.getElementById("toast");
+            toast.innerText = toastMessage;
+            toast.style.visibility = "visible";
+            setTimeout(() => {
+                toast.style.visibility = "hidden";
+            }, 3000);
+ }
+    </script>
+</body>
+</html>

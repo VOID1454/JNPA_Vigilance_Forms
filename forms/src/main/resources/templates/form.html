@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable Expenditure Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        td[contenteditable="true"]:hover {
+            background-color: #f9f9f9;
+            cursor: text;
+        }
+        input[type="date"] {
+            width: 100%;
+            border: none;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .save-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #2196F3;
+        }
+        .dropdown-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Expenditure on Gifts</h1>
+<h2>सरकारी कर्मचारियों द्वारा उपहार स्वीकार करने संबंध में</h2>
+
+<!-- Year Selection Dropdown -->
+<div class="dropdown-container">
+    <label for="yearSelector">Select Year: </label>
+    <select id="yearSelector">
+        <!-- Year options will be added dynamically by JavaScript -->
+    </select>
+</div>
+
+<table id="expenditureTable">
+    <thead>
+        <tr>
+            <th>Sr. No</th>
+            <th>Name & Designation of the Government Official to whom gift has been given</th>
+            <th>Date on which gift has been given</th>
+            <th>Expenditure incurred by JNPT (Rs.)</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td contenteditable="true"></td>
+            <td><input type="date"></td>
+            <td contenteditable="true"></td>
+            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<button onclick="addRow()">Add Row</button>
+<button class="save-btn" onclick="saveTable()">Save Table</button>
+
+<script>
+    let srNo = 2;
+    const MAX_ROWS = 100;
+
+    // Function to add a new row
+    function addRow() {
+        const table = document.getElementById('expenditureTable').getElementsByTagName('tbody')[0];
+        if (table.rows.length >= MAX_ROWS) {
+            alert("Maximum of 100 rows allowed.");
+            return;
+        }
+
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>${srNo++}</td>
+            <td contenteditable="true"></td>
+            <td><input type="date"></td>
+            <td contenteditable="true"></td>
+            <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+        `;
+    }
+
+    // Function to delete a row
+    function deleteRow(button) {
+        const row = button.parentNode.parentNode;
+        row.remove();
+        updateSrNo();
+    }
+
+    // Update Sr. No after deletion
+    function updateSrNo() {
+        const rows = document.querySelectorAll("#expenditureTable tbody tr");
+        srNo = 1;
+        rows.forEach((row) => {
+            row.cells[0].textContent = srNo++;
+        });
+    }
+
+    // Function to validate table
+    function validateTable() {
+        const rows = document.querySelectorAll("#expenditureTable tbody tr");
+        for (let row of rows) {
+            const name = row.cells[1].textContent.trim();
+            const dateInput = row.cells[2].querySelector("input").value;
+            const expenditure = row.cells[3].textContent.trim();
+
+            // Validate Name & Designation
+            if (!name) {
+                alert("Name & Designation cannot be blank.");
+                return false;
+            }
+
+            // Validate Date
+            if (!dateInput) {
+                alert("Date cannot be empty.");
+                return false;
+            }
+
+            // Validate Expenditure (Positive Number)
+            if (!/^\d+(\.\d{1,2})?$/.test(expenditure) || parseFloat(expenditure) <= 0) {
+                alert("Expenditure must be a positive number.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    
+
+    // Populate the Year dropdown dynamically
+    function populateYearDropdown() {
+        const currentYear = new Date().getFullYear();
+        const yearSelector = document.getElementById('yearSelector');
+        
+        for (let year = 1900; year <= currentYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelector.appendChild(option);
+        }
+    }
+
+    // Call populateYearDropdown to add years to the dropdown
+    populateYearDropdown();
+</script>
+
+</body>
+</html>

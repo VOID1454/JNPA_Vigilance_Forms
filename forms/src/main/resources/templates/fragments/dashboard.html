@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .green {
+            background-color: green;
+            color: white;
+        }
+
+        .red {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Forms Dashboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Staff No</th>
+                <th>Form 1 (Expenditure)</th>
+                <th>Form 2 (Progress of Work)</th>
+                <th>Form 3 (Progress of Work Civil)</th>
+                <th>Form 4 (Foreign Visits)</th>
+                <th>Form 51 (Suspension Report)</th>
+                <th>Form 52 (Penalty Case)</th>
+                <th>Form 5A</th>
+                <th>Form 5B</th>
+                <th>Form 5C</th>
+                <th>Form 6 (Contract)</th>
+            </tr>
+        </thead>
+        <tbody id="dashboard-body">
+            <!-- Data will be dynamically populated -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchDashboardData() {
+            try {
+                const response = await axios.get('/dashboard');
+                const data = response.data;
+
+                const tableBody = document.getElementById('dashboard-body');
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+
+                    const staffNoCell = document.createElement('td');
+                    staffNoCell.textContent = row.staffNo;
+                    tr.appendChild(staffNoCell);
+
+                    const form1Cell = document.createElement('td');
+                    form1Cell.textContent = row.form1Status === 'green' ? 'Uploaded' : 'Not Uploaded';
+                    form1Cell.className = row.form1Status;
+                    tr.appendChild(form1Cell);
+
+                    const form2Cell = document.createElement('td');
+                    form2Cell.textContent = row.form2Status === 'green' ? 'Uploaded' : 'Not Uploaded';
+                    form2Cell.className = row.form2Status;
+                    tr.appendChild(form2Cell);
+
+                    // Add similar cells for other forms here...
+                    
+                    tableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        }
+
+        fetchDashboardData();
+    </script>
+</body>
+</html>

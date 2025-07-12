@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Form-3</title>
+    <link rel="stylesheet" type="text/css" href="/css/view.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <style>
+        h2 {
+            text-align: center; /* Center the text */
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+    <script src="/js/export.js"></script>
+    <h1>Form- 3</h1>
+    <h2>Statement Showing Quarterly Progress Of Original Work For Quarter  Ending (Civil)</h2>
+    <p></p>
+    <p>1. Civil works (including marine works) costing Rs. 5 Crore and above.</p>
+    <p>2. Horticulture works - costing Rs. 10 lakhs and above.</p>
+    <button onclick="exportToExcel()">Export to Excel</button>
+    <table id="Civil" border="1">
+        <thead>
+            <tr>
+                <th>Staff No</th>
+                <th>Username</th>
+                <th>For Year</th>
+                <th>For Quarter</th>
+                <th>Department</th>
+                <th>Name of works</th>
+                <th>Estimate cost (Rs. in lakhs)</th>
+                <th>Tendered cost (Rs. in lakhs)</th>
+                <th>% above below sch. Rates applicable</th>
+                <th>Agreement No.</th>
+                <th>Aggency</th>
+                <th>Date of commencement</th>
+                <th>Time of completion</th>
+                <th>Phy. Progress in %</th>
+                <th>Name of Engineer I/C with address</th>
+                <th>Remarks</th>
+                <th>CreatedAt</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="progressofworkcivil : ${progressofworkcivil}">
+                <td th:text="${progressofworkcivil.staffno}"></td>
+                <td th:text="${progressofworkcivil.createdBy}"></td> <!-- Correct case -->
+                <td th:text="${progressofworkcivil.foryear}"></td>
+                <td th:text="${progressofworkcivil.forquarter}"></td>
+                <td th:text="${progressofworkcivil.fordepartment}"></td>
+                <td th:text="${progressofworkcivil.descriptionOfWork}"></td>
+                <td th:text="${progressofworkcivil.estimatedCost}"></td>
+                <td th:text="${progressofworkcivil.tenderedCost}"></td>
+                <td th:text="${progressofworkcivil.ratePercentage}"></td>
+                <td th:text="${progressofworkcivil.agreementNo}"></td>
+                <td th:text="${progressofworkcivil.agency}"></td>
+                <td th:text="${progressofworkcivil.commencementDate}"></td>
+                <td th:text="${progressofworkcivil.completionTime}"></td>
+                <td th:text="${progressofworkcivil.physicalProgress}"></td>
+                <td th:text="${progressofworkcivil.engineerInCharge}"></td>
+                <td th:text="${progressofworkcivil.remarks}"></td>
+                <td th:text="${progressofworkcivil.createdAt}"></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+     <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+     <!-- DataTables JS -->
+     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+ 
+     <script>
+         $(document).ready(function () {
+             // Initialize DataTables without pagination
+             $('#Civil').DataTable({
+                 paging: true,      // Disable pagination
+                 searching: true,    // Enable search functionality
+                 ordering: true,     // Enable sorting
+                 language: {
+                     search: "Search: " // Customize search bar label
+                 }
+             });
+         });
+         function exportToExcel() {
+    var table = document.getElementById("Civil");
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Civil" });
+    XLSX.writeFile(wb, "Civil.xlsx");
+}
+     </script>
+</body>
+</html>
+     

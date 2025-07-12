@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suspension Cases Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    h1 {
+        margin-top: 80px; /* Adjust the value as needed */
+    }
+    .container {
+      width: 90%;
+      margin: 20px auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    td input {
+    width: 100%;
+    border: 1px solid black; /* Add a thin border */
+    padding: 4px;
+    box-sizing: border-box;
+}
+    button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50; /* Green color */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .add-row-btn {
+            margin-right: auto; /* Pushes the button to the left */
+        }
+        .save-btn {
+            margin-left: auto; /* Pushes the button to the right */
+            margin-right: auto; /* Centers the button */
+        }
+        .save-container {
+            text-align: center; /* Center the save button */
+            margin-top: 20px; /* Add some space above the save button */
+        }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .note {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+    }
+    th {
+    background-color: #6fa7eb;
+}
+
+  </style>
+
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+
+  <body>
+
+    <header th:insert="~{fragments/header.html :: header}"></header>
+  <script src="/static/js/scripts.js"></script>
+
+    <div class ="container">
+      <div class="header">
+        <h1>Form- 5.1</h1>
+        <h2>निलंबन के मामले :</h2>
+        <h2>SUSPENSION CASES:</h2>
+        <h2>Department : <span th:text="${session.department}"></span></h2>
+      </div>
+  
+      <form action="/user/form-51" method="POST" onsubmit="return validateForm()">
+        <table id="suspensionTable">
+          <thead>
+            <tr>
+              <th rowspan="2">SR No</th>
+              <th rowspan="2">For Month / Year</th>
+              <th rowspan="2">इस माह के आरंभ में निलंबन व्यक्तियों की संख्या<br>No. of persons under suspension in the beginning of the month</th>
+              <th rowspan="2">इस माह में निलंबित व्यक्तियों की संख्या<br>No. of persons suspended during the month</th>
+              <th rowspan="2">ऐसे मामले की संख्या जिनमें निलंबन वापस ले लिया गया।<br>No. of cases where suspension revoked during the month</th>
+              <th colspan="4">माह के अंत में निलंबित व्यक्तियों की कुल संख्या<br>Total no. of persons under suspension at the end of the month</th>
+              <th rowspan="2">Delete</th>
+            </tr>
+            <tr>
+              <th>१-३ माह<br>1-3 month</th>
+              <th>३-६ माह<br>3-6 month</th>
+              <th>६ माह से अधिक<br>Over 6 month</th> 
+              <th>कुल<br>Total</th>
+            </tr>
+          </thead>
+          <tbody id="suspensionData">
+            <tr>
+              <td class="srNo">1</td>
+              <td>
+                <select name="forquarter[]" required>
+                  <option value="" disabled selected>Select Month</option>
+                 <option value="January">January</option>
+<option value="February">February</option>
+<option value="March">March</option>
+<option value="April">April</option>
+<option value="May">May</option>
+<option value="June">June</option>
+<option value="July">July</option>
+<option value="August">August</option>
+<option value="September">September</option>
+<option value="October">October</option>
+<option value="November">November</option>
+<option value="December">December</option>
+
+
+                </select>
+                <div id="yearSelector1">${generateYearSelector()}</div>
+              </td>
+              <td><input type="number" name="personsUnderSuspensionStart[]" required></td>
+              <td><input type="number" name="personsSuspended[]" required></td>
+              <td><input type="number" name="suspensionRevoked[]" required></td>
+              <td><input type="number" name="personsSuspended1to3Months[]" oninput="updateTotal(this)" required></td>
+              <td><input type="number" name="personsSuspended3to6Months[]" oninput="updateTotal(this)" required></td>
+              <td><input type="number" name="personsSuspendedOver6Months[]" oninput="updateTotal(this)" required></td>
+              <td><input type="number" name="totalPersonsUnderSuspensionEnd[]" readonly></td>
+              <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <div class="buttons">
+          <button type="button" class="add-row-btn" onclick="addRow()">Add Row</button>
+        </div>
+        <div class="save-container">
+          <button type="submit" class="save-btn">Submit Form</button>
+        </div>
+      </form>
+    </div>
+  
+    <script>
+      function generateYearSelector() {
+        let currentYear = new Date().getFullYear();
+        let yearOptions = '<select name="foryear[]" required>';
+        yearOptions += '<option value="" disabled selected>Select Year</option>';
+        for (let i = currentYear; i >= currentYear - 100; i--) {
+          yearOptions += `<option value="${i}">${i}</option>`;
+        }
+        yearOptions += '</select>';
+        return yearOptions;
+      }
+  
+      function addRow() {
+        var table = document.getElementById("suspensionData");
+        var newRow = table.insertRow();
+        var rowCount = table.rows.length + 1; // Update to reflect the correct SR No
+  
+        // SR No column
+        var srCell = newRow.insertCell(0);
+        srCell.className = "srNo";
+        srCell.textContent = rowCount;
+  
+        // For Quarter / Year cell
+        var quarterCell = newRow.insertCell(1);
+        quarterCell.innerHTML = `
+          <select name="forquarter[]" required>
+            <option value="" disabled selected>Select Quarter</option>
+            <option value="Q1">Q1</option>
+            <option value="Q2">Q2</option>
+            <option value="Q3">Q3</option>
+            <option value="Q4">Q4</option>
+          </select>
+          ${generateYearSelector()}
+        `;
+  
+        // Create input fields for other columns
+        var fields = [
+          "personsUnderSuspensionStart[]",
+          "personsSuspended[]",
+          "suspensionRevoked[]",
+          "personsSuspended1to3Months[]",
+          "personsSuspended3to6Months[]",
+          "personsSuspendedOver6Months[]",
+          "totalPersonsUnderSuspensionEnd[]"
+        ];
+  
+        for (var i = 0; i < fields.length; i++) {
+          var newCell = newRow.insertCell(i + 2); // Adjust index for new cells
+          var input = document.createElement("input");
+          input.type = "number";
+          input.name = fields[i];
+          input.required = true;
+  
+          // Make total field readonly
+          if (i === 6) {
+            input.readOnly = true;
+          }
+  
+          // Add updateTotal function on input for relevant fields
+          if (i >= 3 && i <= 5) {
+            input.setAttribute("oninput", "updateTotal(this)");
+          }
+  
+          newCell.appendChild(input);
+        }
+  
+        // Delete button
+        var deleteCell = newRow.insertCell(9);
+        var deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "delete-btn";
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = function () { deleteRow(this); };
+        deleteCell.appendChild(deleteButton);
+      }
+  
+       // Function to update total based on 1-3 months, 3-6 months, and Over 6 months
+       function updateTotal(input) {
+        var row = input.closest('tr');
+        var month1to3 = row.cells[5].querySelector('input').value || 0;
+        var month3to6 = row.cells[6].querySelector('input').value || 0;
+        var over6 = row.cells[7].querySelector('input').value || 0;
+  
+        var total = parseInt(month1to3) + parseInt(month3to6) + parseInt(over6);
+        row.cells[8].querySelector('input').value = total;
+      }
+  
+      function validateForm() {
+        var isValid = true;
+        var inputs = document.querySelectorAll("input[required]");
+        inputs.forEach(function(input) {
+          if (!input.value) {
+            alert("Please fill in all required fields.");
+            isValid = false;
+          }
+        });
+        if (isValid) {
+          alert("Form has been saved successfully!");
+        }
+        return isValid;
+      }
+  
+      function deleteRow(button) {
+        var row = button.closest('tr');
+        row.parentNode.removeChild(row);
+        updateRowNumbers();
+      }
+  
+      function updateRowNumbers() {
+        var rows = document.querySelectorAll('#suspensionData .srNo');
+        rows.forEach((row, index) => {
+          row.textContent = index + 1;
+        });
+      }
+  
+      // Initialize the year selector for the first row
+      document.getElementById('yearSelector1').innerHTML = generateYearSelector();
+    </script>
+  
+  </body>
+  </html>

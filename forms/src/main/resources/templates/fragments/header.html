@@ -1,0 +1,199 @@
+<header th:fragment="header">
+    <style>
+       /* Base styles for dropdown menus */
+.dropdown-menu {
+    position: absolute;
+    display: none;
+    z-index: 1000;
+    background-color: #303030;
+    border: 1px solid #29b9fc;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 6cm;
+}
+
+.dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu.right {
+    left: 100%; /* Position to the right of the parent */
+    top: 0; /* Align with the top of the parent */
+}
+
+.submenu {
+    position: absolute;
+    display: none;
+    background-color: #303030;
+    border: 1px solid #ccc;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 6cm;
+}
+
+.dropdown-submenu:hover > .submenu {
+    display: block;
+}
+
+.submenu.right {
+    left: 100%; /* Position to the right of the parent */
+    top: 0; /* Align with the top of the parent */
+}
+
+/* Styling for dropdown links */
+.dropdown-toggle, .dropdown-submenu > a {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #333;
+}
+
+.dropdown-toggle:hover, .dropdown-submenu > a:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown {
+    position: relative;
+    border: #f5f5f5;
+}
+
+.dropdown-submenu {
+    
+    position: relative;
+}
+    </style>
+
+    <div class="header-container">
+        <!-- Logo -->
+        <div class="logo" style="display: flex; align-items: center;">
+            <img th:src="@{/images/logo.png}" width="100" height="auto" alt="Logo" />
+            <span style="margin-left: 10px; font-size: 20px; font-weight: bold;">
+                <a href="/user/home"  style="color: white; text-decoration: none;">JNPA Vigilance Reports</a>
+            </span>
+        </div>
+        <!-- Navigation Menu -->
+        <nav>
+            <ul class="menu">
+                <!-- Yearly -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle"><i class="fas fa-calendar-year"></i> Yearly</a>
+                    <ul class="dropdown-menu">
+                        <!-- Form 1 -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Form 1<br>Gift Report</a>
+                            <ul class="dropdown-menu right">
+                                <li><a th:href="@{/user/view-expenditures}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                <li><a th:href="@{/user/form-1}"><i class="fas fa-plus"></i> Create New</a></li>
+                            </ul>
+                        </li>
+                        
+                         <!-- Form 4 -->
+                           <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Form 4<br>Foreign Visit</a>
+                            <ul class="dropdown-menu right">
+                                <li><a th:href="@{/user/view-foreignvisits}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                <li><a th:href="@{/user/form-4}"><i class="fas fa-plus"></i> Create New</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+        
+                <!-- Quarterly -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle"><i class="fas fa-calendar-quarter"></i> Quarterly</a>
+                    <ul class="dropdown-menu">
+                        <!-- Form 2 -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Form 2<br>Other department CTE</a>
+                            <ul class="dropdown-menu right">
+                                <li><a th:href="@{/user/view-progressofwork}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                <li><a th:href="@{/user/form-2}"><i class="fas fa-plus"></i> Create New</a></li>
+                            </ul>
+                        </li>
+                        <!-- Form 3 -->
+                        <li class=" dropdown">
+                            <a href="#" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Form 3<br>Civil other department CTE</a>
+                            <ul class="dropdown-menu right">
+                                <li><a th:href="@{/user/view-progressofworkCivil}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                <li><a th:href="@{/user/form-3}"><i class="fas fa-plus"></i> Create New</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+        
+                <!-- Monthly -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle"><i class="fas fa-calendar-month"></i> Monthly</a>
+                    <ul class="dropdown-menu">
+                       
+                        
+                        <!-- Form 5 -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Form 5</a>
+                            <ul class="dropdown-menu right">
+                                <li class="dropdown-submenu">
+                                    <a href="#"> Form 5.1<br>Suspension Cases</a>
+                                    <ul class="submenu right">
+                                        <li><a th:href="@{/user/view-suspensionreport}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                        <li><a th:href="@{/user/form-51}"><i class="fas fa-plus"></i> Create New</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">Form 5.2<br>major/minor penalty cases</a>
+                                    <ul class="submenu right">
+                                        <li><a th:href="@{/user/view-penaltycase}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                        <li><a th:href ="@{/user/form-52}"><i class="fas fa-plus"></i> Create New</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">Form 5A<br>Suspension Details</a>
+                                    <ul class="submenu right">
+                                        <li><a th:href="@{/user/view-5A}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                        <li><a th:href="@{/user/form-5A}"><i class="fas fa-plus"></i> Create New</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">Form 5B<br>Major/Minor Penalty Proceedings</a>
+                                    <ul class="submenu right">
+                                        <li><a th:href="@{/user/view-5B}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                        <li><a th:href="@{/user/form-5B}"><i class="fas fa-plus"></i> Create New</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">Form 5C<br>Pending Penalty Proceedings</a>
+                                    <ul class="submenu right">
+                                        <li><a th:href="@{/user/view-5C}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                        <li><a th:href="@{/user/form-5C}"><i class="fas fa-plus"></i> Create New</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Form 6 -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"><i class="fas fa-file-alt"></i> Form 6<br>Ongoing/Concluded Works</a>
+                            <ul class="dropdown-menu right">
+                                <li><a th:href="@{/user/view-contract}"><i class="fas fa-eye"></i> View Previous</a></li>
+                                <li><a th:href="@{/user/form-6}"><i class="fas fa-plus"></i> Create New</a></li>
+                            </ul>
+                        </li>
+                        
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Logout and Change Password Dropdown -->
+        <div class="user-dropdown">
+            <a href="#" class="user-toggle"><i class="fas fa-user"></i> <span th:text="${username}" >! </span></a>
+            <ul class="user-dropdown-menu">
+                <li><a th:href="@{/user/change-password}"><i class="fas fa-key"></i> Change Password</a></li>
+                <li><a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<p>Welcome, <span th:text="${session.username}"></span>!</p>
+<p>Your staff no is, <span th:text="${session.staffno}"></span></p>

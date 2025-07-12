@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+   <meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+
+    <title>User Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('your-image-path.jpg');
+    
+        }
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://img.freepik.com/free-photo/industrial-port-container-yard_1112-1202.jpg?semt=ais_hybrid');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(0px); 
+            z-index: -1; }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .button {
+            width: 200px;
+            height: 50px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+        h1 {
+        margin-top: 80px; /* Adjust the value as needed */
+        }
+
+
+
+    </style>
+
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+</head>
+<body>
+    <div class="background"></div>
+
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+
+
+    
+    <h1>Welcome, <span th:text="${session.username}"></span>!</h1>
+    <h2>your staff no is, <span th:text="${session.staffno}"></span></h2>
+    <h2>Department : <span th:text="${session.department}"></span></h2>
+  <!-- Dynamic user name -->
+    <p>You are successfully logged in.</p>
+
+<!-- 
+    <div class="button-container"></div>
+    <button class="button" onclick="redirectToPage('/user/change-password')">Change Password</button>
+    </div> -->
+
+
+
+    <!--
+    <div class="button-container">
+        <button class="button" onclick="redirectToPage('/user/form-1')">form-1</button>
+        <button class="button" onclick="redirectToPage('/user/form-2')">form-2</button>
+        <button class="button" onclick="redirectToPage('/user/form-3')">form-3</button>
+        <button class="button" onclick="redirectToPage('/user/form-4')">form-4</button>
+        
+        <button class="button" onclick="redirectToPage('/user/form-51')">form-51</button>
+        <button class="button" onclick="redirectToPage('/user/form-52')">form-52</button>
+        <button class="button" onclick="redirectToPage('/user/form-5A')">form-5A</button>
+        <button class="button" onclick="redirectToPage('/user/form-5B')">form-5B</button>
+        <button class="button" onclick="redirectToPage('/user/form-5C')">form-5C</button>
+        <button class="button" onclick="redirectToPage('/user/form-6')">form-6</button>
+    </div>
+-->
+    <script>
+        function redirectToPage(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+package com.example.forms.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.example.forms.model.Contract;
+
+@Repository
+public interface ContractRepository extends JpaRepository<Contract, Long> {
+
+    List<Contract> findByStaffno(String staffno);
+
+
+    @Query("SELECT DISTINCT c.staffno FROM Contract c")
+    List<String> findDistinctStaffno();
+
+    List<Contract> findByFordepartment (String fordepartment);
+}

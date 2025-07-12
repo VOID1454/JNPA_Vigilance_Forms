@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form 6 - Ongoing / Concluded Works</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        h1 {
+            margin-top: 80px; /* Adjust the value as needed */
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* Enables horizontal scrolling */
+            margin-top: 20px; /* Space above the table */
+        }
+        table {
+            min-width: 100%; /* Ensures the table takes up at least 100% width */
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: auto; /* Ensures the table takes up 100% width */
+            word-wrap: break-word; /* Ensures long text wraps inside cells */
+            border: 1px solid black;
+        }
+        th, td {
+    padding: 8px;
+    border: 1px solid black;
+    text-align: left;
+    min-width: 120px; /* Set a minimum width for all columns */
+}
+th:nth-child(1), td:nth-child(1) { min-width: 50px; } /* SR.No. */
+th:nth-child(2), td:nth-child(2) { min-width: 150px; } /* Department */
+th:nth-child(3), td:nth-child(3) { min-width: 150px; } /* Section */
+th:nth-child(4), td:nth-child(4) { min-width: 100px; } /* For the month */
+th:nth-child(5), td:nth-child(5) { min-width: 100px; } /* Tender No. */
+th:nth-child(6), td:nth-child(6) { min-width: 200px; } /* Item/Nature of work */
+th:nth-child(7), td:nth-child(7) { min-width: 200px; } /* Mode of Tender Enquiry */
+th:nth-child(8), td:nth-child(8) { min-width: 150px; } /* Date of publication of NIT */
+th:nth-child(9), td:nth-child(9) { min-width: 150px; } /* Type of Cover */
+th:nth-child(10), td:nth-child(10) { min-width: 150px; } /* Last date of receipt of Tender */
+th:nth-child(11), td:nth-child(11) { min-width: 100px; } /* Nos. Bids received */
+th:nth-child(12), td:nth-child(12) { min-width: 200px; } /* Nos. & Names of parties qualified */
+th:nth-child(13), td:nth-child(13) { min-width: 200px; } /* Nos. & Names of parties not qualified */
+th:nth-child(14), td:nth-child(14) { min-width: 150px; } /* Whether contract awarded to L1 */
+th:nth-child(15), td:nth-child(15) { min-width: 200px; } /* Contract No. & Date */
+th:nth-child(16), td:nth-child(16) { min-width: 200px; } /* Name of the Contractor */
+th:nth-child(17), td:nth-child(17) { min-width: 150px; } /* Value of Contract (in Rs.) */
+th:nth-child(18), td:nth-child(18) { min-width: 150px; } /* Actual date of start of work */
+th:nth-child(19), td:nth-child(19) { min-width: 150px; } /* Scheduled date of completion */
+th:nth-child(20), td:nth-child(20) { min-width: 150px; } /* Actual date of completion */
+th:nth-child(21), td:nth-child(21) { min-width: 200px; } /* Reason for delay if any */
+th:nth-child(22), td:nth-child(22) { min-width: 200px; } /* Remarks */
+th:nth-child(23), td:nth-child(23) { min-width: 100px; } /* Action */
+th {
+    background-color: #6fa7eb;
+}
+textarea {
+    width: 100%;
+    border: 1px solid black; /* Change the border width to 1px */
+    padding: 4px;
+    box-sizing: border-box;
+    resize: none;
+    min-height: 90px;
+    overflow: hidden;
+}
+        td input, td select {
+            width: 100%;
+            border: none;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .save-btn {
+            display: block;
+            margin: 20px auto;
+            background-color:#4CAF50;
+        }
+    </style>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+
+    <div class="container">
+        <h1>Form- 6 </h1>
+        <h2> Ongoing / Concluded Works</h2>
+        <h2>Department : <span th:text="${session.department}"></span></h2>
+        
+        <form id="form6" action="/user/save-table-6" method="POST" onsubmit="encodeInputs(); return validateForm()">
+            <div class="table-container">
+                <table id="contractsTable">
+                    
+                    <thead>
+                        <tr>
+                            <th>SR.No.</th>
+                            <th>Department</th>
+                            <th>Section</th>
+                            <th>For the month</th>
+                            <th>Tender No.</th>
+                            <th>Item/Nature of work</th>
+                            <th>Mode of Tender Enquiry</th>
+                            <th>Date of publication of NIT</th>
+                            <th>Type of Cover (Single/Two bid system)</th>
+                            <th>Last date of receipt of Tender</th>
+                            <th>Nos. Bids received</th>
+                            <th>Nos. & Names of parties qualified</th>
+                            <th>Nos. & Names of parties not qualified</th>
+                            <th>Whether contract awarded to L1</th>
+                            <th>Contract No. & Date</th>
+                            <th>Name of the Contractor</th>
+                            <th>Value of Contract (in Rs.)</th>
+                            <th>Actual date of start of work</th>
+                            <th>Scheduled date of completion</th>
+                            <th>Actual date of completion</th>
+                            <th>Reason for delay if any</th>
+                            <th>Remarks</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><textarea name="todepartment[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="section[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="month" name="forthemonth[]" ></td>
+                            <td><textarea name="tenderNo[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="natureOfWork[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="tenderEnquiry[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="date" name="nitDate[]" ></td>
+                            <td><textarea name="biddingType[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="date" name="receiptDate[]" ></td>
+                            <td><textarea name="tenderReceived[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="qualifiedParties[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="notQualifiedParties[]" required oninput="autoResize(this)"></textarea></td>
+                            <td>
+                                <select name="contractL1[]" required>
+                                    <option value="YES">YES</option>
+                                    <option value="NO">NO</option>
+                                </select>
+                            </td>
+                            <td><textarea name="contractNo[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="contractorName[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="contractValue[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="date" name="startDate[]" ></td>
+                            <td><input type="date" name="completionDate[]" ></td>
+                            <td><input type="date" name="actualCompletionDate[]" ></td>
+                            <td><textarea name="delayReason[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="remarks[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button type="button" onclick="addRow()">Add Row</button>
+            <button type="submit" class="save-btn">Submit Form</button>
+        </form>
+    </div>
+    
+    <script>
+        let srNo = 2; // Initialize serial number for new rows
+        
+        // Function to add a new row to the table
+        function addRow() {
+            const table = document.getElementById('contractsTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td>${srNo}</td>
+                <td><textarea name="department[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="section[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="month" name="forthemonth[]" required></td>
+                            <td><textarea name="tenderNo[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="natureOfWork[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="tenderEnquiry[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="date" name="nitDate[]" required></td>
+                            <td><textarea name="biddingType[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="date" name="receiptDate[]" required></td>
+                            <td><textarea name="tenderReceived[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="qualifiedParties[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="notQualifiedParties[]" required oninput="autoResize(this)"></textarea></td>
+                            <td>
+                                <select name="contractL1[]" required>
+                                    <option value="YES">YES</option>
+                                    <option value="NO">NO</option>
+                                </select>
+                            </td>
+                            <td><textarea name="contractNo[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="contractorName[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="contractValue[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><input type="date" name="startDate[]" required></td>
+                            <td><input type="date" name="completionDate[]" required></td>
+                            <td><input type="date" name="actualCompletionDate[]" required></td>
+                            <td><textarea name="delayReason[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><textarea name="remarks[]" required oninput="autoResize(this)"></textarea></td>
+                            <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>`;
+            
+            srNo++;
+        }
+
+        // Function to delete a row
+        function deleteRow(button) {
+            const row = button.parentElement.parentElement;
+            row.parentElement.removeChild(row);
+            updateSerialNumbers(); // Update serial numbers after deletion
+        }
+
+        // Function to update serial numbers after a row is deleted
+        function updateSerialNumbers() {
+            const rows = document.querySelectorAll("#contractsTable tbody tr");
+            srNo = 1; // Reset serial number
+            rows.forEach((row) => {
+                row.cells[0].textContent = srNo++;
+            });
+        }
+
+        // Function to validate form before submission
+        function validateForm() {
+            const form = document.getElementById('form6');
+            const isValid = form.checkValidity(); // Check if the form is valid
+            if (isValid) {
+                alert("Form successfully saved!");
+            }
+            return isValid; // Prevent form submission if invalid
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        function encodeInputs() {
+            document.querySelectorAll("textarea, input").forEach(input => {
+                input.value = input.value.replace(/,/g, '|');  // Replace commas with "|"
+            });
+        }
+    </script>
+
+</body>
+</html>

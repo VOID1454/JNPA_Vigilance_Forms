@@ -1,0 +1,223 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    /* background-color: #96afd5; */
+    margin: 0;
+}
+
+/* Header Styling */
+.header-container {
+    background: linear-gradient(to right, #007BFF, #00A2E8);
+    color: white;
+    padding: 10px 30px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+nav {
+    flex-grow: 1;
+}
+
+.menu {
+    display: flex;
+    list-style-type: none;
+}
+
+.menu li {
+    position: relative;
+    margin: 0 15px;
+}
+
+.menu li a {
+    display: block;
+    color: white;
+    font-size: 16px;
+    padding: 12px 18px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.menu li a:hover {
+    background-color: #54b0ce;
+    transform: scale(1.05);
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu,
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #0c0c0c;
+    color: #fff; /* Changed to white for better contrast */
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    padding: 10px 0; /* Added padding for better spacing */
+    z-index: 1001;
+}
+
+.dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu:hover > .submenu {
+    display: block;
+    left: 100%; /* Position to the right of the parent */
+    top: 0; /* Align with the top of the parent */
+}
+
+.submenu li a:hover {
+    background-color: #e0e0e0; /* Light background for submenu items */
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > a::after {
+    content: ' ➤';
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+.dropdown-menu li {
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu li:hover {
+    background-color: #e0e0e0; /* Light background on hover */
+}
+
+/* User Dropdown Styling */
+.user-dropdown {
+    position: relative;
+}
+
+.user-toggle {
+    color: white;
+    font-size: 16px;
+    padding: 12px 18px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+}
+
+.user-toggle:hover {
+    background-color: #54b0ce;
+    transform: scale(1.05);
+}
+
+.user-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -100px; /* Position to the left */
+    background-color: #2c3e50; /* Dark background for dropdown */
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    padding: 10px 0; /* Padding for top and bottom */
+    z-index: 1001;
+}
+
+.user-dropdown:hover .user-dropdown-menu {
+    display: block;
+}
+
+.user-dropdown-menu li {
+    list-style: none;
+    transition: background-color 0.3s ease;
+}
+
+.user-dropdown-menu li a {
+    color: white; /* White text color */
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.user -dropdown-menu li a:hover {
+    background-color: #34495e; /* Slightly lighter background on hover */
+    border-radius: 4px;
+}
+
+/* Icons in Dropdown */
+.user-dropdown-menu li a i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+    }
+
+    .menu li {
+        width: 100%;
+    }
+
+    .menu li a {
+        padding: 12px 20px;
+        text-align: left;
+    }
+
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 24px;
+    }
+
+    .menu-toggle i {
+        color: white;
+    }
+
+    .logout a {
+        margin-top: 10px;
+        padding: 10px 15px;
+    }
+}
+
+/* Show the menu when clicked */
+.menu.active {
+    display: flex;
+}

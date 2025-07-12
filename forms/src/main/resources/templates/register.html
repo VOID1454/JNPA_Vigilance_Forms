@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .registration-container {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        input[type="password"] {
+            font-family: 'Arial', sans-serif;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .error {
+            color: #ff4d4d;
+        }
+
+        .success {
+            color: #28a745;
+        }
+
+        /* Additional Styling for Select Dropdown */
+        select {
+            appearance: none;
+            background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat right 12px center;
+            background-size: 16px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .registration-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="registration-container">
+        <h1>Register</h1>
+        <form action="/register" method="post" th:object="${user}">
+            <label>Name:</label>
+            <input type="text" name="name" th:field="*{name}" required><br>
+
+            <label>Email:</label>
+            <input type="email" name="email" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,}" title="Email must contain '@' symbol" required><br>
+            
+            <label>Contact no:</label>
+            <input type="text" name="contactno" th:field="*{contactno}" required><br>
+            
+            <label>Staffno:</label>
+            <input type="text" name="staffno" th:field="*{staffno}" required><br>
+
+            <label>Password:</label>
+            <input type="password" name="password" th:field="*{password}" required><br>
+
+            <label>Role:</label>
+            <select name="role" th:field="*{role}">
+                <option value="USER">User </option>
+                <option value="ADMIN">Admin</option>
+            </select><br>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="message">
+            <p th:if="${error}" class="error" th:text="${error}"></p>
+            <p th:if="${success}" class="success" th:text="${success}"></p>
+        </div>
+    </div>
+
+</body>
+</html>

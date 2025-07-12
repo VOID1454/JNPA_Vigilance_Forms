@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Form-5A</title>
+    <link rel="stylesheet" type="text/css" href="/css/view.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+     <!-- DataTables CSS -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+     <style>
+        h2 {
+            text-align: center; /* Center the text */
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <header th:insert="~{fragments/header.html :: header}"></header>
+    <script src="/static/js/scripts.js"></script>
+    <script src="/js/export.js"></script>
+
+    <h1>Form- 5, Annexure 'A'</h1>
+        <h2>निलंबित अधिकारी का विवरण :</h2>
+        <h2>Statement showing details of official under suspension:</h2>
+
+    <button onclick="exportToExcel()">Export to Excel</button>
+    
+    <table id="5A" border="1">
+        <thead>
+            <tr>
+                <th>Staff No</th>
+                <th>Username</th>
+                <th>For month</th>
+                <th>निलंबित अधिकारी का नाम और पदनाम<br>Name & Designation of the suspended officer</th>
+                <th>निलंबन की तारीख<br>Date of suspension</th>
+                <th>निलंबन के कारण<br>Reason for suspension</th>
+                <th>क्या तीन महीनों के मामलों की समीक्षा की गई<br>Whether in 3 months cases reviewed</th>
+                <th>मामले की वर्तमान स्थिति<br>Present status of the case</th>
+                <th>अन्युक्ति<br>Remarks</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        
+            <tbody>
+                <tr th:each="form5A : ${form5A}">
+                    <td th:text="${form5A.staffno}"></td>
+                    <td th:text="${form5A.createdBy}"></td>
+                    <td th:text="${form5A.forquarter}"></td>
+                    <td th:text="${form5A.officerName}"></td>
+                    <td th:text="${form5A.suspensionDate}"></td>
+                    <td th:text="${form5A.reasonForSuspension}"></td>
+                    <td th:text="${form5A.casesReviewed}"></td>
+                    <td th:text="${form5A.currentStatus}"></td>
+                    <td th:text="${form5A.remarks}"></td>
+                    <td th:text="${form5A.createdAt}"></td>
+                </tr>
+            </tbody>
+            
+        
+    </table>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables without pagination
+            $('#5A').DataTable({
+                paging: true,      // Disable pagination
+                searching: true,    // Enable search functionality
+                ordering: true,     // Enable sorting
+                language: {
+                    search: "Search: " // Customize search bar label
+                }
+            });
+        });
+        function exportToExcel() {
+    var table = document.getElementById("5A");
+    var wb = XLSX.utils.table_to_book(table, { sheet: "5A" });
+    XLSX.writeFile(wb, "5A.xlsx");
+}
+    </script>
+</body>
+</html>
