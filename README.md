@@ -115,8 +115,8 @@ Add screenshots in a screenshots/ folder and embed them here like:
 
 👨‍💻 Author
 Pranit Mhatre
-📧 pranitmhatre123@gmail.com
-🔗 GitHub
+📧 pranitmhatre1454@gmail.com
+🔗 [GitHub](https://github.com/VOID1454)
 
 📝 License
 This project is licensed under the MIT License.
